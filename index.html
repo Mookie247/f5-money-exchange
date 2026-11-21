@@ -151,6 +151,34 @@
   footer .swatches{display:inline-flex;gap:6px;vertical-align:middle;margin-left:8px}
   footer .swatches i{width:12px;height:12px;border-radius:3px;display:inline-block}
 
+  /* Admin */
+  .admin-link{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 16px;font-size:.78rem;font-weight:700;min-height:34px;letter-spacing:.04em}
+  .admin-link:hover{color:var(--text);border-color:var(--blue)}
+  .admin-overlay{display:none;position:fixed;inset:0;background:rgba(8,12,18,.62);z-index:60;padding:16px;overflow-y:auto}
+  .admin-overlay.show{display:flex;align-items:flex-start;justify-content:center}
+  .admin-modal{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);width:100%;max-width:480px;margin:auto;padding:22px}
+  .admin-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .admin-head h2{margin:0;font-size:1.15rem;font-weight:800}
+  .admin-head .lock{font-size:.75rem;font-weight:800;color:#fff;background:var(--blue);border-radius:999px;padding:3px 10px}
+  .admin-close{margin-left:auto;width:40px;height:40px;min-height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-size:1.25rem;line-height:1}
+  .admin-note{color:var(--muted);font-size:.9rem;margin:6px 0 14px}
+  .admin-note strong{color:var(--text)}
+  .admin-field{margin-bottom:12px}
+  .admin-field label{display:block;font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .admin-field input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font:inherit;font-weight:700;background:var(--surface);color:var(--text)}
+  .admin-field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,71,171,.18)}
+  .admin-field .readonly-box{border:1.5px dashed var(--line);border-radius:12px;padding:11px 14px;font-weight:800;letter-spacing:.06em;background:var(--surface-2)}
+  .admin-msg{font-size:.9rem;min-height:1.35em;margin:8px 0}
+  .admin-msg.err{color:var(--bad);font-weight:700}
+  .admin-msg.ok{color:var(--good);font-weight:700}
+  .admin-full{width:100%}
+  .admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .admin-actions .btn{flex:1 1 160px}
+  .admin-linklike{display:block;margin:12px auto 0;background:none;border:0;color:var(--blue);font-size:.85rem;font-weight:700;text-decoration:underline;min-height:36px}
+  @media (prefers-color-scheme: dark){ .admin-linklike{color:var(--green)} }
+  .admin-divider{border:0;border-top:1px solid var(--line);margin:18px 0}
+  .admin-subhead{font-size:.95rem;font-weight:800;margin:0 0 8px}
+
   @media (max-width:640px){
     .clocks,.rates,.conv-grid,.qtable{grid-template-columns:1fr}
     .dir-toggle{grid-template-columns:1fr 48px 1fr}
@@ -169,7 +197,7 @@
       <h1><span class="f5-blue">F5</span> <span class="f5-green">Money Exchange</span></h1>
       <p>ထိုင်းဘတ် (THB) ↔ မြန်မာကျပ် (MMK) ငွေလဲနှုန်း</p>
     </div>
-    <div class="live-badge"><span class="dot" aria-hidden="true"></span> နမူနာနှုန်း · SAMPLE RATES</div>
+    <div class="live-badge"><span class="dot" aria-hidden="true"></span> <span id="rateBadgeText">နမူနာနှုန်း · SAMPLE RATES</span></div>
   </header>
 
   <!-- Live clocks -->
@@ -190,8 +218,8 @@
   <div class="board" aria-label="ယနေ့ ငွေလဲနှုန်း">
     <div class="board-head">
       <div>
-        <h2>ငွေလဲနှုန်း <span style="background:var(--green);color:#0b2e1a;font-size:.72rem;font-weight:800;border-radius:999px;padding:3px 10px;vertical-align:middle">နမူနာ · SAMPLE</span></h2>
-        <p>အောက်ပါနှုန်းများသည် နမူနာအတွက်သာ ဖြစ်သည် — F5 Money Exchange ၏ အမှန်တကယ်နှုန်းကို <span class="num">index.html</span> ရှိ CONFIG တွင် ပြင်ထည့်ပါ။ နှုန်းအားလုံးကို ကျပ် ၁ သိန်း (100,000 MMK) အခြေခံဖြင့် ပြထားသည်</p>
+        <h2>ငွေလဲနှုန်း <span id="boardBadge" style="background:var(--green);color:#0b2e1a;font-size:.72rem;font-weight:800;border-radius:999px;padding:3px 10px;vertical-align:middle">နမူနာ · SAMPLE</span></h2>
+        <p>နှုန်းအားလုံးကို ကျပ် ၁ သိန်း (100,000 MMK) အခြေခံဖြင့် ပြထားသည်။ နှုန်းပြင်ရန် စာမျက်နှာအောက်ခြေ Footer ရှိ <strong style="color:#fff">Admin</strong> ကို နှိပ်ပါ — Admin ဖြင့် ပြင်ထားသော နှုန်းများသည် ဤ browser တွင်သာ သိမ်းထားမည်။</p>
       </div>
       <div class="updated">နှုန်း အခြေအနေ · <span id="updatedAt">—</span></div>
     </div>
@@ -214,7 +242,7 @@
   <!-- Promo -->
   <section class="card promo" aria-label="Promo Code">
     <h2>Promo Code ဖြင့် အထူးစျေး</h2>
-    <p class="sub">Promo Code ရှိပါက ရိုက်ထည့်ပါ — အထူးဘတ်စျေး ချက်ချင်း ပေါ်လာမည်။ (အထူးစျေးမှာလည်း နမူနာနှုန်း ဖြစ်သည် — CONFIG တွင် ပြင်နိုင်သည်)</p>
+    <p class="sub">Promo Code ရှိပါက ရိုက်ထည့်ပါ — အထူးဘတ်စျေး ချက်ချင်း ပေါ်လာမည်။ အထူးစျေးကို Admin panel တွင် သတ်မှတ်နိုင်သည်။</p>
     <div class="promo-row">
       <input id="promoInput" type="text" placeholder="Promo Code ရိုက်ထည့်ပါ" autocomplete="off" autocapitalize="characters" aria-label="Promo Code" />
       <button class="btn" id="promoBtn" type="button">အထူးစျေး ကြည့်ရန်</button>
@@ -230,7 +258,7 @@
   <!-- Converter -->
   <section class="card" aria-label="ငွေလဲ တွက်စက်">
     <h2>ငွေလဲ တွက်စက်</h2>
-    <p class="sub">ပမာဏ ရိုက်ထည့်လိုက်သည်နှင့် ချက်ချင်း တွက်ပေးသည်။ လက်ရှိ နမူနာနှုန်းဖြင့် တွက်ထားသည် — CONFIG တွင် နှုန်းပြင်လိုက်လျှင် တွက်ချက်မှုအားလုံး လိုက်ပြောင်းမည်။</p>
+    <p class="sub">ပမာဏ ရိုက်ထည့်လိုက်သည်နှင့် ချက်ချင်း တွက်ပေးသည်။ Admin တွင် နှုန်းပြင်လိုက်လျှင် တွက်ချက်မှုအားလုံး လိုက်ပြောင်းမည်။</p>
     <div class="dir-toggle" role="group" aria-label="လဲလှယ်မှု ဦးတည်ချက်">
       <button class="dir-btn green active" id="dirMmkThb" type="button">ကျပ် → ဘတ်</button>
       <button class="swap-btn" id="swapBtn" type="button" aria-label="ဦးတည်ချက် ပြောင်းရန်">⇄</button>
@@ -268,7 +296,7 @@
   <!-- Quick table -->
   <section class="card" aria-label="အမြန် နှိုင်းယှဉ် ဇယား">
     <h2>အမြန် နှိုင်းယှဉ်ဇယား</h2>
-    <p class="sub">နမူနာ အရောင်းစျေးနှုန်းဖြင့် တွက်ထားသည်။ Promo အထူးစျေး ရထားပါက တွက်စက်တွင် ပိုမိုရရှိနိုင်သည်။</p>
+    <p class="sub">အရောင်းစျေးနှုန်းဖြင့် တွက်ထားသည်။ Promo အထူးစျေး ရထားပါက တွက်စက်တွင် ပိုမိုရရှိနိုင်သည်။</p>
     <div class="qtable">
       <div class="qcol">
         <h3>ကျပ် → ဘတ်</h3>
@@ -285,7 +313,7 @@
   <details class="guide">
     <summary>GitHub Pages တွင် တင်နည်း နှင့် နှုန်းပြင်နည်း</summary>
     <div class="guide-body">
-      <p><strong>နှုန်းပြင်နည်း —</strong> <code>index.html</code> ဖိုင် ထိပ်ပိုင်းရှိ <code>CONFIG</code> ထဲတွင် <code>buyRate</code>၊ <code>sellRate</code>၊ <code>promoRate</code> တို့ကို ပြင်ပြီး ပြန်တင်လိုက်ရုံပင်။ နှုန်းအားလုံးသည် ကျပ် ၁ သိန်း (100,000 MMK) လျှင် ရမည့် ဘတ်ပမာဏ ဖြစ်သည်။ Promo Code မှာ <code>WMTH13F5</code> ဖြစ်ပြီး <code>promoCode</code> တွင် ပြင်နိုင်သည်။</p>
+      <p><strong>နှုန်းပြင်နည်း (၂ နည်း) —</strong> (၁) စာမျက်နှာအောက်ခြေ Footer ရှိ <strong>Admin</strong> ကို နှိပ်၍ PIN ဖြင့် ဝင်ပြီး နှုန်းပြင်နိုင်သည် — ထိုနှုန်းများသည် <strong>ဤ browser တွင်သာ</strong> သိမ်းထားမည်။ (၂) လူတိုင်းအတွက် အမြဲတမ်း ပြောင်းလိုပါက <code>index.html</code> ထိပ်ပိုင်းရှိ <code>CONFIG</code> ထဲတွင် <code>buyRate</code>၊ <code>sellRate</code>၊ <code>promoRate</code> တို့ကို ပြင်ပြီး ပြန်တင်ပါ။ နှုန်းအားလုံးသည် ကျပ် ၁ သိန်း (100,000 MMK) လျှင် ရမည့် ဘတ်ပမာဏ ဖြစ်သည်။ Promo Code မှာ <code>WMTH13F5</code> ဖြစ်သည်။</p>
       <ol>
         <li>GitHub တွင် repository အသစ် တစ်ခု ဆောက်ပါ (ဥပမာ <code>f5-money-exchange</code>)</li>
         <li>ဤ project မှ <code>index.html</code> နှင့် <code>assets</code> folder ကို upload တင်ပါ</li>
@@ -299,9 +327,84 @@
   <footer>
     <span class="f-brand">F5 Money Exchange</span> · ထိုင်းဘတ် ↔ မြန်မာကျပ် ငွေလဲနှုန်း · ကျပ် ၁ သိန်း အခြေခံ
     <span class="swatches" aria-hidden="true"><i style="background:#0047AB"></i><i style="background:#2ECC71"></i><i style="background:#1C1C1E"></i></span>
-    <div style="margin-top:6px">ဤစာမျက်နှာရှိ နှုန်းများသည် နမူနာနှုန်းများ ဖြစ်သည် — F5 Money Exchange ၏ အမှန်တကယ်နှုန်းကို index.html ရှိ CONFIG တွင် ပြင်ထည့်ရန် လိုသည်။ လဲလှယ်မှု မပြုမီ နောက်ဆုံးနှုန်းကို အတည်ပြုပါ။</div>
+    <div style="margin-top:6px">လဲလှယ်မှု မပြုမီ နောက်ဆုံးနှုန်းကို F5 Money Exchange တွင် အတည်ပြုပါ။</div>
+    <div><button type="button" class="admin-link" id="adminOpenBtn">Admin</button></div>
   </footer>
 
+</div>
+
+<!-- Admin overlay -->
+<div class="admin-overlay" id="adminOverlay" role="dialog" aria-modal="true" aria-label="Admin panel">
+  <div class="admin-modal">
+    <div class="admin-head">
+      <h2>Admin</h2><span class="lock">PIN ခံထားသည်</span>
+      <button class="admin-close" id="adminCloseBtn" type="button" aria-label="ပိတ်ရန်">×</button>
+    </div>
+
+    <!-- First-time PIN setup -->
+    <div id="adminSetupView">
+      <p class="admin-note">ပထမဆုံး အကြိမ် ဝင်ရောက်ခြင်း ဖြစ်သည် — Admin PIN အသစ် သတ်မှတ်ပါ။ PIN ကို ဤ browser တွင်သာ သိမ်းထားမည်။</p>
+      <div class="admin-field">
+        <label for="setupPin">PIN အသစ် (ဂဏန်း ၄–၈ လုံး)</label>
+        <input id="setupPin" class="num" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="••••" />
+      </div>
+      <div class="admin-field">
+        <label for="setupPin2">PIN ကို နောက်တစ်ခါ ရိုက်ထည့်ပါ</label>
+        <input id="setupPin2" class="num" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="••••" />
+      </div>
+      <p class="admin-msg" id="setupMsg" role="status"></p>
+      <button class="btn blue admin-full" id="setupBtn" type="button">PIN သတ်မှတ်ပြီး ဝင်ရန်</button>
+    </div>
+
+    <!-- PIN login -->
+    <div id="adminLoginView" hidden>
+      <p class="admin-note">Admin panel ဖွင့်ရန် PIN ရိုက်ထည့်ပါ။</p>
+      <div class="admin-field">
+        <label for="loginPin">Admin PIN</label>
+        <input id="loginPin" class="num" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="••••" />
+      </div>
+      <p class="admin-msg" id="loginMsg" role="status"></p>
+      <button class="btn blue admin-full" id="loginBtn" type="button">ဝင်ရန်</button>
+      <button class="admin-linklike" id="forgotPinBtn" type="button">PIN မေ့သွားပါသလား — PIN နှင့် သိမ်းထားသော နှုန်းများ ပြန်ရှင်းရန်</button>
+    </div>
+
+    <!-- Admin panel -->
+    <div id="adminPanelView" hidden>
+      <p class="admin-note">နှုန်းအားလုံး = ကျပ် ၁ သိန်း (100,000 MMK) လျှင် ရမည့် ဘတ် (THB)။ သိမ်းလိုက်သော နှုန်းများသည် <strong>ဤ browser တွင်သာ</strong> သိမ်းထားမည် — တခြား device / browser မှ ဝင်ကြည့်သူများ မမြင်ရပါ။</p>
+      <div class="admin-field">
+        <label for="adminBuy">အဝယ်စျေး · BUY (ဘတ် / ကျပ် ၁ သိန်း)</label>
+        <input id="adminBuy" class="num" type="text" inputmode="decimal" />
+      </div>
+      <div class="admin-field">
+        <label for="adminSell">အရောင်းစျေး · SELL (ဘတ် / ကျပ် ၁ သိန်း)</label>
+        <input id="adminSell" class="num" type="text" inputmode="decimal" />
+      </div>
+      <div class="admin-field">
+        <label>Promo Code</label>
+        <div class="readonly-box num" id="adminPromoCode">WMTH13F5</div>
+      </div>
+      <div class="admin-field">
+        <label for="adminPromoRate">Promo အထူးစျေး (ဘတ် / ကျပ် ၁ သိန်း) — အလွတ်ထားလျှင် Promo ပိတ်ထားမည်</label>
+        <input id="adminPromoRate" class="num" type="text" inputmode="decimal" placeholder="ဥပမာ 665" />
+      </div>
+      <p class="admin-msg" id="adminMsg" role="status"></p>
+      <div class="admin-actions">
+        <button class="btn" id="adminSaveBtn" type="button">နှုန်းများ သိမ်းရန်</button>
+        <button class="btn ghost" id="adminResetBtn" type="button">နမူနာနှုန်း ပြန်သုံးရန်</button>
+      </div>
+      <hr class="admin-divider" />
+      <p class="admin-subhead">PIN ပြောင်းရန်</p>
+      <div class="admin-field">
+        <label for="adminNewPin">PIN အသစ် (ဂဏန်း ၄–၈ လုံး)</label>
+        <input id="adminNewPin" class="num" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="••••" />
+      </div>
+      <p class="admin-msg" id="pinMsg" role="status"></p>
+      <button class="btn ghost admin-full" id="changePinBtn" type="button">PIN ပြောင်းရန်</button>
+      <hr class="admin-divider" />
+      <button class="btn ghost admin-full" id="adminLogoutBtn" type="button">ထွက်ရန် (Panel ပိတ်ရန်)</button>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -320,6 +423,27 @@ var CONFIG = {
 var BASE = 100000;
 var state = { dir: "MMK_THB", promo: false };
 
+/* ---------- localStorage: Admin နှုန်းများ (ဤ browser တွင်သာ) ---------- */
+var LS_RATES = "f5_github_rates_v1";
+var LS_PIN = "f5_github_admin_pin_v1";
+var DEFAULTS = { buyRate: CONFIG.buyRate, sellRate: CONFIG.sellRate, promoCode: CONFIG.promoCode, promoRate: CONFIG.promoRate };
+var hasStoredRates = false;
+(function loadStoredRates() {
+  try {
+    var raw = localStorage.getItem(LS_RATES);
+    if (!raw) return;
+    var r = JSON.parse(raw);
+    if (r && isFinite(+r.buyRate) && isFinite(+r.sellRate) && +r.buyRate > 0 && +r.sellRate > 0) {
+      CONFIG.buyRate = +r.buyRate;
+      CONFIG.sellRate = +r.sellRate;
+      if (r.promoCode) CONFIG.promoCode = String(r.promoCode);
+      CONFIG.promoRate = (r.promoRate === null || r.promoRate === "" || r.promoRate === undefined || !isFinite(+r.promoRate)) ? null : +r.promoRate;
+      if (r.updatedAt) CONFIG.updatedAt = String(r.updatedAt);
+      hasStoredRates = true;
+    }
+  } catch (e) { /* localStorage မရလျှင် CONFIG နမူနာနှုန်းဖြင့် ဆက်သွားမည် */ }
+})();
+
 function fmt(n, dec) {
   if (!isFinite(n)) return "—";
   return n.toLocaleString("en-US", { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
@@ -336,13 +460,19 @@ function mmkToThb(mmk) { return mmk / BASE * mmkToThbRate(); }
 function thbToMmk(thb) { return thb * BASE / CONFIG.buyRate; }
 
 /* ---------- Board ---------- */
-document.getElementById("buyRate").textContent = fmtRate(CONFIG.buyRate);
-document.getElementById("sellRate").textContent = fmtRate(CONFIG.sellRate);
-document.getElementById("buyEq").textContent = fmtRate(CONFIG.buyRate);
-document.getElementById("sellEq").textContent = fmtRate(CONFIG.sellRate);
-document.getElementById("baseEq").textContent = fmtRate(CONFIG.sellRate) + " THB";
-document.getElementById("spreadVal").textContent = fmtRate(CONFIG.buyRate - CONFIG.sellRate);
-document.getElementById("updatedAt").textContent = CONFIG.updatedAt;
+function refreshBoard() {
+  document.getElementById("buyRate").textContent = fmtRate(CONFIG.buyRate);
+  document.getElementById("sellRate").textContent = fmtRate(CONFIG.sellRate);
+  document.getElementById("buyEq").textContent = fmtRate(CONFIG.buyRate);
+  document.getElementById("sellEq").textContent = fmtRate(CONFIG.sellRate);
+  document.getElementById("baseEq").textContent = fmtRate(CONFIG.sellRate) + " THB";
+  document.getElementById("spreadVal").textContent = fmtRate(CONFIG.buyRate - CONFIG.sellRate);
+  document.getElementById("updatedAt").textContent = CONFIG.updatedAt;
+  document.getElementById("rateBadgeText").textContent = hasStoredRates ? "Admin နှုန်း · ဤ browser တွင် သိမ်းထားသည်" : "နမူနာနှုန်း · SAMPLE RATES";
+  document.getElementById("boardBadge").textContent = hasStoredRates ? "ADMIN နှုန်း" : "နမူနာ · SAMPLE";
+  document.getElementById("adminPromoCode").textContent = CONFIG.promoCode;
+}
+refreshBoard();
 
 /* ---------- Clocks ---------- */
 var dayNames = ["တနင်္ဂနွေ", "တနင်္လာ", "အင်္ဂါ", "ဗုဒ္ဓဟူး", "ကြာသပတေး", "သောကြာ", "စနေ"];
@@ -365,6 +495,11 @@ function applyPromo() {
   var code = promoInput.value.trim().toUpperCase();
   if (!code) { promoMsg.textContent = "Promo Code အရင် ရိုက်ထည့်ပါ။"; promoMsg.className = "promo-msg err"; return; }
   if (code === CONFIG.promoCode.toUpperCase()) {
+    if (CONFIG.promoRate === null || CONFIG.promoRate === undefined || !isFinite(CONFIG.promoRate)) {
+      promoMsg.textContent = "Promo Code မှန်သည် — ဒါပေမဲ့ Promo အထူးစျေး မသတ်မှတ်ရသေးပါ။ Admin တွင် အထူးစျေး သတ်မှတ်ပြီးမှ အသုံးပြုနိုင်မည်။";
+      promoMsg.className = "promo-msg err"; promoMsg.style.color = ""; promoMsg.style.fontWeight = "";
+      return;
+    }
     state.promo = true;
     document.getElementById("promoRateVal").textContent = fmtRate(CONFIG.promoRate);
     var gain = CONFIG.promoRate - CONFIG.sellRate;
@@ -442,23 +577,202 @@ document.getElementById("copyBtn").addEventListener("click", function () {
 });
 
 /* ---------- Quick table ---------- */
-(function buildTable() {
+function buildTable() {
   var mmkBox = document.getElementById("mmkRows");
+  mmkBox.innerHTML = "";
   [100000, 300000, 500000, 1000000, 5000000, 10000000].forEach(function (v, i) {
     var d = document.createElement("div"); d.className = "qrow" + (i === 0 ? " hl" : "");
     d.innerHTML = '<span class="from num">' + fmt(v) + ' ကျပ်</span><span class="to num">' + fmt(v / BASE * CONFIG.sellRate, 2) + ' ဘတ်</span>';
     mmkBox.appendChild(d);
   });
   var thbBox = document.getElementById("thbRows");
+  thbBox.innerHTML = "";
   [100, 500, 1000, 5000, 10000, 50000].forEach(function (v, i) {
     var d = document.createElement("div"); d.className = "qrow" + (i === 2 ? " hl" : "");
     d.innerHTML = '<span class="from num">' + fmt(v) + ' ဘတ်</span><span class="to num">' + fmt(v * BASE / CONFIG.buyRate) + ' ကျပ်</span>';
     thbBox.appendChild(d);
   });
-})();
+}
+buildTable();
+
+function refreshAll() {
+  if (CONFIG.promoRate === null || CONFIG.promoRate === undefined) {
+    state.promo = false;
+    document.getElementById("promoResult").classList.remove("show");
+    document.getElementById("promoAppliedNote").classList.remove("show");
+  } else if (state.promo) {
+    document.getElementById("promoRateVal").textContent = fmtRate(CONFIG.promoRate);
+    document.getElementById("promoGain").textContent = "ပုံမှန်စျေးထက် ကျပ် ၁ သိန်းလျှင် " + fmtRate(CONFIG.promoRate - CONFIG.sellRate) + " ဘတ် ပိုမိုရရှိမည်။";
+    document.getElementById("promoAppliedRate").textContent = fmtRate(CONFIG.promoRate);
+  }
+  refreshBoard();
+  buildTable();
+  convert();
+}
 
 renderChips();
 convert();
+
+/* ---------- Admin (PIN + localStorage) ---------- */
+var adminOverlay = document.getElementById("adminOverlay");
+var setupView = document.getElementById("adminSetupView");
+var loginView = document.getElementById("adminLoginView");
+var panelView = document.getElementById("adminPanelView");
+
+function simpleHash(str) {
+  var h1 = 0xdeadbeef, h2 = 0x41c6ce57, s = "f5::" + str;
+  for (var i = 0; i < s.length; i++) {
+    var ch = s.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+}
+function hashPin(pin) {
+  if (window.crypto && crypto.subtle && window.TextEncoder) {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode("f5::" + pin)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+    }).catch(function () { return simpleHash(pin); });
+  }
+  return Promise.resolve(simpleHash(pin));
+}
+function getStoredPinHash() { try { return localStorage.getItem(LS_PIN); } catch (e) { return null; } }
+function validPinFormat(pin) { return /^\d{4,8}$/.test(pin); }
+function showAdminView(view) {
+  setupView.hidden = view !== "setup";
+  loginView.hidden = view !== "login";
+  panelView.hidden = view !== "panel";
+}
+function openAdmin() {
+  adminOverlay.classList.add("show");
+  document.body.style.overflow = "hidden";
+  document.getElementById("setupMsg").textContent = "";
+  document.getElementById("loginMsg").textContent = "";
+  document.getElementById("adminMsg").textContent = "";
+  document.getElementById("pinMsg").textContent = "";
+  if (getStoredPinHash()) { showAdminView("login"); setTimeout(function () { document.getElementById("loginPin").focus(); }, 50); }
+  else { showAdminView("setup"); setTimeout(function () { document.getElementById("setupPin").focus(); }, 50); }
+}
+function closeAdmin() {
+  adminOverlay.classList.remove("show");
+  document.body.style.overflow = "";
+  document.getElementById("setupPin").value = "";
+  document.getElementById("setupPin2").value = "";
+  document.getElementById("loginPin").value = "";
+  document.getElementById("adminNewPin").value = "";
+}
+function prefillPanel() {
+  document.getElementById("adminBuy").value = fmtRate(CONFIG.buyRate);
+  document.getElementById("adminSell").value = fmtRate(CONFIG.sellRate);
+  document.getElementById("adminPromoRate").value = (CONFIG.promoRate === null || CONFIG.promoRate === undefined) ? "" : fmtRate(CONFIG.promoRate);
+  document.getElementById("adminPromoCode").textContent = CONFIG.promoCode;
+}
+function enterPanel() { prefillPanel(); showAdminView("panel"); }
+function nowStamp() {
+  var p = {};
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Yangon", day: "numeric", month: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+    return p.day + "/" + p.month + "/" + p.year + " · " + p.hour + ":" + p.minute + " (ရန်ကုန်ချိန်)";
+  } catch (e) { return "Admin နှုန်း"; }
+}
+function setMsg(el, text, ok) { el.textContent = text; el.className = "admin-msg " + (ok ? "ok" : "err"); }
+
+document.getElementById("adminOpenBtn").addEventListener("click", openAdmin);
+document.getElementById("adminCloseBtn").addEventListener("click", closeAdmin);
+adminOverlay.addEventListener("click", function (e) { if (e.target === adminOverlay) closeAdmin(); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape" && adminOverlay.classList.contains("show")) closeAdmin(); });
+document.getElementById("adminLogoutBtn").addEventListener("click", closeAdmin);
+
+/* PIN setup (ပထမဆုံး အကြိမ်) */
+document.getElementById("setupBtn").addEventListener("click", function () {
+  var msg = document.getElementById("setupMsg");
+  var p1 = document.getElementById("setupPin").value.trim();
+  var p2 = document.getElementById("setupPin2").value.trim();
+  if (!validPinFormat(p1)) { setMsg(msg, "PIN သည် ဂဏန်း ၄ လုံးမှ ၈ လုံးအထိ ဖြစ်ရမည်။", false); return; }
+  if (p1 !== p2) { setMsg(msg, "PIN နှစ်ခု မတူပါ — ပြန်စစ်ပြီး ထပ်ရိုက်ထည့်ပါ။", false); return; }
+  hashPin(p1).then(function (h) {
+    try { localStorage.setItem(LS_PIN, h); } catch (e) { setMsg(msg, "ဤ browser တွင် PIN သိမ်း၍ မရပါ။", false); return; }
+    enterPanel();
+  });
+});
+document.getElementById("setupPin2").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("setupBtn").click(); });
+
+/* PIN login */
+document.getElementById("loginBtn").addEventListener("click", function () {
+  var msg = document.getElementById("loginMsg");
+  var pin = document.getElementById("loginPin").value.trim();
+  if (!pin) { setMsg(msg, "PIN အရင် ရိုက်ထည့်ပါ။", false); return; }
+  hashPin(pin).then(function (h) {
+    if (h === getStoredPinHash()) { document.getElementById("loginPin").value = ""; enterPanel(); }
+    else { setMsg(msg, "PIN မမှန်ပါ — ပြန်စစ်ပြီး ထပ်ကြိုးစားပါ။", false); }
+  });
+});
+document.getElementById("loginPin").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("loginBtn").click(); });
+
+/* PIN မေ့သွားလျှင် — နှစ်ခါနှိပ် အတည်ပြုပြီး PIN + နှုန်းများ ရှင်းရန် */
+var forgotArmed = false;
+document.getElementById("forgotPinBtn").addEventListener("click", function () {
+  var msg = document.getElementById("loginMsg");
+  if (!forgotArmed) {
+    forgotArmed = true;
+    this.textContent = "သေချာပါသလား — နောက်တစ်ခါ နှိပ်လျှင် PIN နှင့် သိမ်းထားသော နှုန်းများ ပျက်မည်";
+    setMsg(msg, "ရှင်းလိုက်လျှင် နမူနာနှုန်းများ ပြန်ဖြစ်သွားမည်။", false);
+    return;
+  }
+  try { localStorage.removeItem(LS_PIN); localStorage.removeItem(LS_RATES); } catch (e) {}
+  forgotArmed = false;
+  this.textContent = "PIN မေ့သွားပါသလား — PIN နှင့် သိမ်းထားသော နှုန်းများ ပြန်ရှင်းရန်";
+  CONFIG.buyRate = DEFAULTS.buyRate; CONFIG.sellRate = DEFAULTS.sellRate;
+  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate;
+  CONFIG.updatedAt = "နမူနာနှုန်း"; hasStoredRates = false;
+  refreshAll();
+  showAdminView("setup");
+});
+
+/* နှုန်းများ သိမ်းရန် */
+document.getElementById("adminSaveBtn").addEventListener("click", function () {
+  var msg = document.getElementById("adminMsg");
+  var buy = parseAmount(document.getElementById("adminBuy").value);
+  var sell = parseAmount(document.getElementById("adminSell").value);
+  var promoRaw = document.getElementById("adminPromoRate").value.trim();
+  var promo = promoRaw === "" ? null : parseAmount(promoRaw);
+  if (!(buy > 0) || !(sell > 0)) { setMsg(msg, "အဝယ်စျေး နှင့် အရောင်းစျေး ကို မှန်ကန်သော ဂဏန်း ရိုက်ထည့်ပါ။", false); return; }
+  if (promo !== null && !(promo > 0)) { setMsg(msg, "Promo အထူးစျေး မှန်ကန်သော ဂဏန်း ဖြစ်ရမည် — ပိတ်ထားလိုလျှင် အလွတ်ထားပါ။", false); return; }
+  CONFIG.buyRate = buy; CONFIG.sellRate = sell; CONFIG.promoRate = promo;
+  CONFIG.updatedAt = nowStamp();
+  hasStoredRates = true;
+  try {
+    localStorage.setItem(LS_RATES, JSON.stringify({ buyRate: buy, sellRate: sell, promoCode: CONFIG.promoCode, promoRate: promo, updatedAt: CONFIG.updatedAt }));
+  } catch (e) { setMsg(msg, "ဤ browser တွင် နှုန်း သိမ်း၍ မရပါ။", false); return; }
+  refreshAll();
+  setMsg(msg, "သိမ်းပြီးပြီ — နှုန်းအသစ်များကို board၊ တွက်စက် နှင့် ဇယားတွင် ပြနေပြီ။ (ဤ browser တွင်သာ)", true);
+});
+
+/* နမူနာနှုန်း ပြန်သုံးရန် */
+document.getElementById("adminResetBtn").addEventListener("click", function () {
+  var msg = document.getElementById("adminMsg");
+  try { localStorage.removeItem(LS_RATES); } catch (e) {}
+  CONFIG.buyRate = DEFAULTS.buyRate; CONFIG.sellRate = DEFAULTS.sellRate;
+  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate;
+  CONFIG.updatedAt = "နမူနာနှုန်း"; hasStoredRates = false;
+  refreshAll();
+  prefillPanel();
+  setMsg(msg, "နမူနာနှုန်းများ ပြန်သုံးနေပြီ — သိမ်းထားသော Admin နှုန်းများ ပျက်သွားပြီ။", true);
+});
+
+/* PIN ပြောင်းရန် */
+document.getElementById("changePinBtn").addEventListener("click", function () {
+  var msg = document.getElementById("pinMsg");
+  var np = document.getElementById("adminNewPin").value.trim();
+  if (!validPinFormat(np)) { setMsg(msg, "PIN အသစ်သည် ဂဏန်း ၄ လုံးမှ ၈ လုံးအထိ ဖြစ်ရမည်။", false); return; }
+  hashPin(np).then(function (h) {
+    try { localStorage.setItem(LS_PIN, h); } catch (e) { setMsg(msg, "ဤ browser တွင် PIN သိမ်း၍ မရပါ။", false); return; }
+    document.getElementById("adminNewPin").value = "";
+    setMsg(msg, "PIN ပြောင်းပြီးပြီ — နောက်တစ်ခါ ဝင်လျှင် PIN အသစ် သုံးပါ။", true);
+  });
+});
 </script>
 </body>
 </html>
