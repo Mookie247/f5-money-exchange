@@ -134,18 +134,6 @@
   .qrow .to{font-weight:800}
   .qrow.hl{border-color:rgba(46,204,113,.6);background:rgba(46,204,113,.08)}
 
-  /* GitHub guide */
-  details.guide{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-top:14px;box-shadow:var(--shadow)}
-  details.guide summary{padding:18px 22px;font-weight:800;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px}
-  details.guide summary::-webkit-details-marker{display:none}
-  details.guide summary::after{content:"+";margin-left:auto;font-size:1.3rem;color:var(--blue)}
-  details.guide[open ] summary::after{content:"–"}
-  .guide-body{padding:0 22px 20px;color:var(--muted);font-size:.94rem}
-  .guide-body ol{margin:8px 0;padding-left:20px}
-  .guide-body li{margin:6px 0}
-  .guide-body code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:.86em;color:var(--text)}
-  .guide-body strong{color:var(--text)}
-
   footer{margin-top:22px;text-align:center;color:var(--muted);font-size:.88rem}
   footer .f-brand{font-weight:800;color:var(--text)}
   footer .swatches{display:inline-flex;gap:6px;vertical-align:middle;margin-left:8px}
@@ -309,21 +297,6 @@
       </div>
     </div>
   </section>
-
-  <!-- GitHub Pages guide -->
-  <details class="guide">
-    <summary>How to publish on GitHub Pages &amp; update rates</summary>
-    <div class="guide-body">
-      <p><strong>Two ways to update rates —</strong> (1) Tap the <strong>logo</strong> to open Admin, sign in with your PIN and edit the rates — those rates are stored in <strong>Supabase</strong>, so everyone sees them right away (if Supabase cannot be reached, they are saved in this browser only). (2) For a permanent change for everyone, edit <code>buyRate</code>, <code>sellRate</code> and <code>promoRate</code> in the <code>CONFIG</code> block near the top of <code>index.html</code> and re-upload. All rates are the THB amount you get per 100,000 MMK. The Promo Code is <code>WMTH13F5</code>.</p>
-      <ol>
-        <li>Create a new repository on GitHub (e.g. <code>f5-money-exchange</code>)</li>
-        <li>Upload <code>index.html</code> and the <code>assets</code> folder from this project</li>
-        <li>In the repository's <strong>Settings → Pages</strong>, choose branch <code>main</code> / <code>root</code> and Save</li>
-        <li>Within a few minutes the page opens at <code>https://&lt;username&gt;.github.io/f5-money-exchange/</code></li>
-        <li>To change rates, edit <code>CONFIG</code> and push a new commit — the page updates automatically</li>
-      </ol>
-    </div>
-  </details>
 
   <footer>
     <span class="f-brand">F5 Money Exchange</span> · Thai Baht ↔ Myanmar Kyat exchange rates · Based on 100,000 MMK
