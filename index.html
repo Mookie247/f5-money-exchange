@@ -239,7 +239,6 @@
       </div>
       <div class="updated"><span id="rateStatusLabel">Rate status</span> · <span id="updatedAt">—</span></div>
     </div>
-    <p class="base-line"><span id="basePrefix">Base —</span> <strong class="num">100,000 MMK</strong> = <strong class="num" id="baseEq">— THB</strong></p>
     <div class="rates">
       <div class="rate buy">
         <div class="label"><i></i> <span id="buyLabel">BUY</span></div>
@@ -645,7 +644,6 @@ function refreshBoard() {
   document.getElementById("sellRate").textContent = fmtRate(CONFIG.sellRate);
   document.getElementById("buyEq").textContent = fmtRate(CONFIG.buyRate);
   document.getElementById("sellEq").textContent = fmtRate(CONFIG.sellRate);
-  document.getElementById("baseEq").textContent = fmtRate(CONFIG.sellRate) + " THB";
   document.getElementById("spreadVal").textContent = fmtRate(CONFIG.buyRate - CONFIG.sellRate);
   document.getElementById("updatedAt").textContent = CONFIG.updatedAt === "Sample rates" ? t("sampleRatesText") : CONFIG.updatedAt;
   document.getElementById("rateBadgeText").textContent = ratesSource === "supabase" ? t("badgeTextLive") : (hasStoredRates ? t("badgeTextLocal") : t("badgeTextSample"));
