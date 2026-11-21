@@ -257,7 +257,7 @@
   <!-- Promo -->
   <section class="card promo" aria-label="Promo Code">
     <h2 id="promoTitle">Special Rate with a Promo Code</h2>
-    <p class="sub" id="promoSub">Have a Promo Code? Enter it here — your special rate appears instantly in both directions, MMK → THB and THB → MMK, based on 100,000 MMK. The special rate is set in the Admin panel.</p>
+    <p class="sub" id="promoSub">Have a Promo Code? Enter it here — each direction has its own special rate, based on 100,000 MMK. MMK → THB and THB → MMK are set separately in the Admin panel.</p>
     <div class="promo-row">
       <input id="promoInput" type="text" placeholder="Enter Promo Code" autocomplete="off" autocapitalize="characters" aria-label="Promo Code" />
       <button class="btn" id="promoBtn" type="button">View Special Rate</button>
@@ -272,11 +272,11 @@
         </div>
         <div class="promo-dir">
           <div class="pd-label">THB → MMK</div>
-          <div class="pd-val num">1,000 THB = <span id="promoReverseVal">—</span> MMK</div>
+          <div class="pd-val num">100,000 MMK = <span id="promoBuyRateVal">—</span> THB<br />1,000 THB = <span id="promoReverseVal">—</span> MMK</div>
         </div>
       </div>
       <p id="promoGain">—</p>
-      <p id="promoNote">The converter below now uses this special rate automatically in both directions — MMK → THB and THB → MMK, based on 100,000 MMK.</p>
+      <p id="promoNote">The converter below now uses each direction's own special rate — MMK → THB uses its Promo rate and THB → MMK uses its own Promo rate, both based on 100,000 MMK. If a direction has no Promo rate set, the regular rate is used for that direction.</p>
     </div>
   </section>
 
@@ -306,7 +306,7 @@
       </div>
     </div>
     <div class="quick" id="quickChips" aria-label="Quick amounts"></div>
-    <div class="promo-applied" id="promoAppliedNote"><span id="promoAppliedText">Promo special rate applied in both directions</span> — <span class="num" id="promoAppliedRate"></span> <span id="promoAppliedUnit">THB per 100,000 MMK</span> · 1,000 THB = <span class="num" id="promoAppliedReverse"></span> MMK</div>
+    <div class="promo-applied" id="promoAppliedNote"><span id="promoAppliedText">Promo special rates applied — each direction uses its own rate</span> · MMK → THB: <span class="num" id="promoAppliedRate"></span> <span id="promoAppliedUnit">THB per 100,000 MMK</span> · THB → MMK: <span class="num" id="promoAppliedBuyRate"></span> THB per 100,000 MMK (1,000 THB = <span class="num" id="promoAppliedReverse"></span> MMK)</div>
     <div class="result">
       <div class="r-label" id="resultLabel">Amount you receive</div>
       <div class="r-big num" id="resultBig">—</div>
@@ -397,15 +397,21 @@
         <div class="readonly-box num" id="adminPromoCode">WMTH13F5</div>
       </div>
       <div class="admin-field">
-        <label for="adminPromoRate" id="adminPromoRateLabel">Promo special rate (THB per 100,000 MMK) — leave blank to turn Promo off</label>
+        <label for="adminPromoRate" id="adminPromoRateLabel">Promo rate — MMK → THB (THB per 100,000 MMK) — leave blank to use the regular rate for this direction</label>
         <input id="adminPromoRate" class="num" type="text" inputmode="decimal" placeholder="e.g. 665" />
+      </div>
+      <div class="admin-field">
+        <label for="adminPromoBuyRate" id="adminPromoBuyRateLabel">Promo rate — THB → MMK (THB per 100,000 MMK) — leave blank to use the regular rate for this direction</label>
+        <input id="adminPromoBuyRate" class="num" type="text" inputmode="decimal" placeholder="e.g. 645" />
+      </div>
+      <div class="admin-field">
         <div class="admin-preview" id="adminPromoPreview" aria-live="polite">
-          <div class="ap-title" id="adminPreviewTitle">Promo Rate Preview — Both Directions</div>
+          <div class="ap-title" id="adminPreviewTitle">Promo Rate Preview — Each Direction Uses Its Own Rate</div>
           <div id="adminPromoPreviewBody">
             <div class="ap-row"><span class="ap-dir">MMK → THB</span><span class="ap-val num" id="adminPromoPreviewMmkThb">—</span></div>
             <div class="ap-row"><span class="ap-dir">THB → MMK</span><span class="ap-val num" id="adminPromoPreviewThbMmk">—</span></div>
           </div>
-          <div class="ap-empty" id="adminPromoPreviewEmpty" hidden>Enter a Promo rate above to preview both directions. Leave it blank to turn Promo off.</div>
+          <div class="ap-empty" id="adminPromoPreviewEmpty" hidden>Enter a Promo rate above to preview that direction. Leave a direction blank to use its regular rate; leave both blank to turn Promo off.</div>
         </div>
       </div>
       <p class="admin-msg" id="adminMsg" role="status"></p>
@@ -438,7 +444,8 @@ var CONFIG = {
   buyRate: 655,        /* Sample BUY rate — THB per 100,000 MMK (replace with the real rate) */
   sellRate: 650,       /* Sample SELL rate — THB per 100,000 MMK (replace with the real rate) */
   promoCode: "WMTH13F5",
-  promoRate: 665,      /* Sample Promo special rate — THB per 100,000 MMK (replace with the real rate) */
+  promoRate: 665,      /* Sample Promo rate — MMK → THB only, THB per 100,000 MMK (replace with the real rate) */
+  promoBuyRate: 645,   /* Sample Promo rate — THB → MMK only, THB per 100,000 MMK (replace with the real rate) */
   updatedAt: "Sample rates"
 };
 
@@ -459,10 +466,10 @@ var I18N = {
     badgeSample: "SAMPLE", badgeLive: "LIVE RATE", badgeAdmin: "ADMIN RATE",
     badgeTextSample: "SAMPLE RATES", badgeTextLive: "LIVE RATES · FROM SUPABASE", badgeTextLocal: "ADMIN RATE · SAVED IN THIS BROWSER",
     promoTitle: "Special Rate with a Promo Code",
-    promoSub: "Have a Promo Code? Enter it here — your special rate appears instantly in both directions, MMK → THB and THB → MMK, based on 100,000 MMK. The special rate is set in the Admin panel.",
+    promoSub: "Have a Promo Code? Enter it here — each direction has its own special rate, based on 100,000 MMK. MMK → THB and THB → MMK are set separately in the Admin panel.",
     promoPlaceholder: "Enter Promo Code", promoBtn: "View Special Rate",
-    promoNote: "The converter below now uses this special rate automatically in both directions — MMK → THB and THB → MMK, based on 100,000 MMK.",
-    promoAppliedText: "Promo special rate applied in both directions", promoAppliedUnit: "THB per 100,000 MMK",
+    promoNote: "The converter below now uses each direction's own special rate — MMK → THB uses its Promo rate and THB → MMK uses its own Promo rate, both based on 100,000 MMK. If a direction has no Promo rate set, the regular rate is used for that direction.",
+    promoAppliedText: "Promo special rates applied — each direction uses its own rate", promoAppliedUnit: "THB per 100,000 MMK",
     convTitle: "Currency Converter",
     convSub: "All calculations are based on 100,000 MMK only. Type an amount and the result is calculated instantly from that base. When Admin updates the rates, every calculation updates too.",
     fromMmk: "Amount you give (MMK)", fromThb: "Amount you give (THB)", toThb: "Amount you receive (THB)", toMmk: "Amount you receive (MMK)",
@@ -482,9 +489,10 @@ var I18N = {
     forgotBtn: "Forgot your PIN? — Reset the PIN and saved rates",
     panelNote: "All rates = the THB you get per 100,000 MMK. Saved rates are stored in Supabase — everyone sees the new rates right away. If Supabase cannot be reached, they are saved in this browser only.",
     adminBuyLabel: "BUY rate (THB per 100,000 MMK)", adminSellLabel: "SELL rate (THB per 100,000 MMK)",
-    adminPromoCodeLabel: "Promo Code", adminPromoRateLabel: "Promo special rate (THB per 100,000 MMK) — leave blank to turn Promo off",
-    adminPreviewTitle: "Promo Rate Preview — Both Directions",
-    adminPreviewEmpty: "Enter a Promo rate above to preview both directions. Leave it blank to turn Promo off.",
+    adminPromoCodeLabel: "Promo Code", adminPromoRateLabel: "Promo rate — MMK → THB (THB per 100,000 MMK) — leave blank to use the regular rate for this direction",
+    adminPromoBuyRateLabel: "Promo rate — THB → MMK (THB per 100,000 MMK) — leave blank to use the regular rate for this direction",
+    adminPreviewTitle: "Promo Rate Preview — Each Direction Uses Its Own Rate",
+    adminPreviewEmpty: "Enter a Promo rate above to preview that direction. Leave a direction blank to use its regular rate; leave both blank to turn Promo off.",
     adminSaveBtn: "Save Rates", adminResetBtn: "Restore Sample Rates",
     changePinTitle: "Change PIN", adminNewPinLabel: "New PIN (4–8 digits)", changePinBtn: "Change PIN", logoutBtn: "Log Out (Close Panel)",
     sampleRatesText: "Sample rates", yangonTime: "(Yangon time)", adminRateText: "Admin rate", supabaseRateText: "Supabase rate"
@@ -498,10 +506,10 @@ var I18N = {
     badgeSample: "နမူနာ", badgeLive: "လက်ရှိနှုန်း", badgeAdmin: "Admin နှုန်း",
     badgeTextSample: "နမူနာနှုန်းများ", badgeTextLive: "လက်ရှိနှုန်းများ · SUPABASE မှ", badgeTextLocal: "Admin နှုန်း · ဤ browser တွင် သိမ်းထားသည်",
     promoTitle: "Promo Code ဖြင့် အထူးနှုန်း",
-    promoSub: "Promo Code ရှိပါသလား။ ဤနေရာတွင် ထည့်ပါ — အထူးနှုန်းကို 100,000 ကျပ် အခြေခံဖြင့် MMK → THB နှင့် THB → MMK နှစ်လမ်းလုံး ချက်ချင်း ပြပေးပါမည်။ အထူးနှုန်းကို Admin panel တွင် သတ်မှတ်ထားပါသည်။",
+    promoSub: "Promo Code ရှိပါသလား။ ဤနေရာတွင် ထည့်ပါ — လမ်းကြောင်းတစ်ခုချင်းစီတွင် ကိုယ်ပိုင် အထူးနှုန်း သပ်သပ်စီ ရှိပါသည်၊ 100,000 ကျပ် အခြေခံဖြင့် တွက်ပါသည်။ MMK → THB နှင့် THB → MMK ကို Admin panel တွင် သပ်သပ်စီ သတ်မှတ်ထားပါသည်။",
     promoPlaceholder: "Promo Code ထည့်ပါ", promoBtn: "အထူးနှုန်း ကြည့်ရန်",
-    promoNote: "အောက်ရှိ converter သည် ဤအထူးနှုန်းကို 100,000 ကျပ် အခြေခံဖြင့် MMK → THB နှင့် THB → MMK နှစ်လမ်းလုံးတွင် အလိုအလျောက် အသုံးပြုနေပါပြီ။",
-    promoAppliedText: "Promo အထူးနှုန်းကို နှစ်လမ်းလုံး အသုံးပြုထားသည်", promoAppliedUnit: "THB (100,000 ကျပ် လျှင်)",
+    promoNote: "အောက်ရှိ converter သည် လမ်းကြောင်းတစ်ခုချင်းစီ၏ ကိုယ်ပိုင် အထူးနှုန်းကို အသုံးပြုနေပါပြီ — MMK → THB သည် ၎င်း၏ Promo နှုန်းကို၊ THB → MMK သည် ၎င်း၏ Promo နှုန်းကို 100,000 ကျပ် အခြေခံဖြင့် အသုံးပြုပါသည်။ လမ်းကြောင်းတစ်ခုအတွက် Promo နှုန်း မသတ်မှတ်ထားပါက ထိုလမ်းကြောင်းအတွက် ပုံမှန်နှုန်းကို အသုံးပြုပါသည်။",
+    promoAppliedText: "Promo အထူးနှုန်းများ အသုံးပြုထားသည် — လမ်းကြောင်းတစ်ခုချင်းစီ ကိုယ်ပိုင်နှုန်းဖြင့်", promoAppliedUnit: "THB (100,000 ကျပ် လျှင်)",
     convTitle: "ငွေလဲတွက်စက်",
     convSub: "တွက်ချက်မှုအားလုံးကို 100,000 ကျပ် တစ်ခုတည်းကိုသာ အခြေခံပြီး တွက်ပါသည်။ ပမာဏ ထည့်လိုက်သည်နှင့် ထိုအခြေခံမှ ရလဒ်ကို ချက်ချင်း တွက်ပြပေးပါသည်။ Admin နှုန်းပြင်လိုက်သည်နှင့် တွက်ချက်မှုအားလုံး အသစ်ဖြစ်သွားပါမည်။",
     fromMmk: "ပေးမည့် ပမာဏ (MMK)", fromThb: "ပေးမည့် ပမာဏ (THB)", toThb: "ရရှိမည့် ပမာဏ (THB)", toMmk: "ရရှိမည့် ပမာဏ (MMK)",
@@ -521,9 +529,10 @@ var I18N = {
     forgotBtn: "PIN မေ့နေပါသလား။ — PIN နှင့် သိမ်းထားသော နှုန်းများကို ပြန်သတ်မှတ်ရန်",
     panelNote: "နှုန်းအားလုံး = 100,000 ကျပ် လျှင် ရရှိမည့် THB ဖြစ်ပါသည်။ သိမ်းလိုက်သော နှုန်းများကို Supabase တွင် သိမ်းထားသဖြင့် လူတိုင်း နှုန်းအသစ်ကို ချက်ချင်း မြင်ရပါသည်။ Supabase သို့ မချိတ်နိုင်ပါက ဤ browser တွင်သာ သိမ်းပါမည်။",
     adminBuyLabel: "ဝယ်နှုန်း (100,000 ကျပ် လျှင် THB)", adminSellLabel: "ရောင်းနှုန်း (100,000 ကျပ် လျှင် THB)",
-    adminPromoCodeLabel: "Promo Code", adminPromoRateLabel: "Promo အထူးနှုန်း (100,000 ကျပ် လျှင် THB) — ပိတ်လိုပါက အလွတ်ထားပါ",
-    adminPreviewTitle: "Promo နှုန်း အစမ်းပြသမှု — နှစ်လမ်းလုံး",
-    adminPreviewEmpty: "နှစ်လမ်းလုံး အစမ်းကြည့်ရန် အထက်တွင် Promo နှုန်း ထည့်ပေးပါ။ ပိတ်လိုပါက အလွတ်ထားပါ။",
+    adminPromoCodeLabel: "Promo Code", adminPromoRateLabel: "Promo နှုန်း — MMK → THB (100,000 ကျပ် လျှင် THB) — ဤလမ်းကြောင်းအတွက် ပုံမှန်နှုန်း သုံးလိုပါက အလွတ်ထားပါ",
+    adminPromoBuyRateLabel: "Promo နှုန်း — THB → MMK (100,000 ကျပ် လျှင် THB) — ဤလမ်းကြောင်းအတွက် ပုံမှန်နှုန်း သုံးလိုပါက အလွတ်ထားပါ",
+    adminPreviewTitle: "Promo နှုန်း အစမ်းပြသမှု — လမ်းကြောင်းတစ်ခုချင်းစီ ကိုယ်ပိုင်နှုန်းဖြင့်",
+    adminPreviewEmpty: "ထိုလမ်းကြောင်း အစမ်းကြည့်ရန် အထက်တွင် Promo နှုန်း ထည့်ပေးပါ။ လမ်းကြောင်းတစ်ခုကို အလွတ်ထားပါက ၎င်း၏ ပုံမှန်နှုန်းကို သုံးပါမည်၊ နှစ်ခုလုံး အလွတ်ထားပါက Promo ပိတ်ပါမည်။",
     adminSaveBtn: "နှုန်းများ သိမ်းရန်", adminResetBtn: "နမူနာနှုန်းများ ပြန်ထားရန်",
     changePinTitle: "PIN ပြောင်းရန်", adminNewPinLabel: "PIN အသစ် (ဂဏန်း ၄–၈ လုံး)", changePinBtn: "PIN ပြောင်းရန်", logoutBtn: "ထွက်ရန် (Panel ပိတ်ရန်)",
     sampleRatesText: "နမူနာနှုန်းများ", yangonTime: "(ရန်ကုန် အချိန်)", adminRateText: "Admin နှုန်း", supabaseRateText: "Supabase နှုန်း"
@@ -554,7 +563,7 @@ function applyLanguage() {
     ? "နှုန်းအားလုံး = 100,000 ကျပ် လျှင် ရရှိမည့် THB ဖြစ်ပါသည်။ သိမ်းလိုက်သော နှုန်းများကို <strong>Supabase</strong> တွင် သိမ်းထားသဖြင့် လူတိုင်း နှုန်းအသစ်ကို ချက်ချင်း မြင်ရပါသည်။ Supabase သို့ မချိတ်နိုင်ပါက ဤ browser တွင်သာ သိမ်းပါမည်။"
     : "All rates = the THB you get per 100,000 MMK. Saved rates are stored in <strong>Supabase</strong> — everyone sees the new rates right away. If Supabase cannot be reached, they are saved in this browser only.";
   setText("adminBuyLabel", "adminBuyLabel"); setText("adminSellLabel", "adminSellLabel");
-  setText("adminPromoCodeLabel", "adminPromoCodeLabel"); setText("adminPromoRateLabel", "adminPromoRateLabel");
+  setText("adminPromoCodeLabel", "adminPromoCodeLabel"); setText("adminPromoRateLabel", "adminPromoRateLabel"); setText("adminPromoBuyRateLabel", "adminPromoBuyRateLabel");
   setText("adminPreviewTitle", "adminPreviewTitle"); setText("adminPromoPreviewEmpty", "adminPreviewEmpty");
   setText("adminSaveBtn", "adminSaveBtn"); setText("adminResetBtn", "adminResetBtn");
   setText("changePinTitle", "changePinTitle"); setText("adminNewPinLabel", "adminNewPinLabel");
@@ -589,7 +598,7 @@ try {
 /* ---------- localStorage: Admin rates (this browser only) ---------- */
 var LS_RATES = "f5_github_rates_v1";
 var LS_PIN = "f5_github_admin_pin_v1";
-var DEFAULTS = { buyRate: CONFIG.buyRate, sellRate: CONFIG.sellRate, promoCode: CONFIG.promoCode, promoRate: CONFIG.promoRate };
+var DEFAULTS = { buyRate: CONFIG.buyRate, sellRate: CONFIG.sellRate, promoCode: CONFIG.promoCode, promoRate: CONFIG.promoRate, promoBuyRate: CONFIG.promoBuyRate };
 var hasStoredRates = false;
 var ratesSource = "sample"; /* "sample" | "local" | "supabase" */
 (function loadStoredRates() {
@@ -602,6 +611,8 @@ var ratesSource = "sample"; /* "sample" | "local" | "supabase" */
       CONFIG.sellRate = +r.sellRate;
       if (r.promoCode) CONFIG.promoCode = String(r.promoCode);
       CONFIG.promoRate = (r.promoRate === null || r.promoRate === "" || r.promoRate === undefined || !isFinite(+r.promoRate)) ? null : +r.promoRate;
+      var storedPromoBuy = (r.promoBuyRate !== undefined) ? r.promoBuyRate : r.promo_buy_rate;
+      CONFIG.promoBuyRate = (storedPromoBuy === null || storedPromoBuy === "" || storedPromoBuy === undefined || !isFinite(+storedPromoBuy)) ? null : +storedPromoBuy;
       if (r.updatedAt) CONFIG.updatedAt = String(r.updatedAt);
       hasStoredRates = true;
       ratesSource = "local";
@@ -620,21 +631,44 @@ function parseAmount(str) {
   var v = parseFloat(String(str).replace(/[^0-9.]/g, ""));
   return isNaN(v) ? 0 : v;
 }
-function mmkToThbRate() { return state.promo ? CONFIG.promoRate : CONFIG.sellRate; }
-function thbToMmkRate() { return state.promo ? CONFIG.promoRate : CONFIG.buyRate; }
+function hasPromoMmkThb() { return CONFIG.promoRate !== null && CONFIG.promoRate !== undefined && isFinite(CONFIG.promoRate) && +CONFIG.promoRate > 0; }
+function hasPromoThbMmk() { return CONFIG.promoBuyRate !== null && CONFIG.promoBuyRate !== undefined && isFinite(CONFIG.promoBuyRate) && +CONFIG.promoBuyRate > 0; }
+function hasAnyPromo() { return hasPromoMmkThb() || hasPromoThbMmk(); }
+function mmkToThbRate() { return (state.promo && hasPromoMmkThb()) ? CONFIG.promoRate : CONFIG.sellRate; }
+function thbToMmkRate() { return (state.promo && hasPromoThbMmk()) ? CONFIG.promoBuyRate : CONFIG.buyRate; }
 function mmkToThb(mmk) { return mmk / BASE * mmkToThbRate(); }
 function thbToMmk(thb) { return thb * BASE / thbToMmkRate(); }
-function promoThbToMmk(thb) { return (CONFIG.promoRate && isFinite(CONFIG.promoRate)) ? thb * BASE / CONFIG.promoRate : NaN; }
+function promoMmkThbValue() { return hasPromoMmkThb() ? CONFIG.promoRate : CONFIG.sellRate; }
+function promoThbMmkPer1000() { var r = hasPromoThbMmk() ? CONFIG.promoBuyRate : CONFIG.buyRate; return 1000 * BASE / r; }
 function updatePromoDisplay() {
-  if (CONFIG.promoRate === null || CONFIG.promoRate === undefined || !isFinite(CONFIG.promoRate)) return;
-  var rev1000 = promoThbToMmk(1000);
-  var v1 = document.getElementById("promoRateVal"); if (v1) v1.textContent = fmtRate(CONFIG.promoRate);
-  var v2 = document.getElementById("promoRateVal2"); if (v2) v2.textContent = fmtRate(CONFIG.promoRate);
+  if (!hasAnyPromo()) return;
+  var effMmkThb = promoMmkThbValue();
+  var effThbMmkRate = hasPromoThbMmk() ? CONFIG.promoBuyRate : CONFIG.buyRate;
+  var rev1000 = promoThbMmkPer1000();
+  var v1 = document.getElementById("promoRateVal"); if (v1) v1.textContent = fmtRate(effMmkThb);
+  var v2 = document.getElementById("promoRateVal2"); if (v2) v2.textContent = fmtRate(effMmkThb);
+  var bv = document.getElementById("promoBuyRateVal"); if (bv) bv.textContent = fmtRate(effThbMmkRate);
   var rv = document.getElementById("promoReverseVal"); if (rv) rv.textContent = fmt(rev1000);
-  var g = document.getElementById("promoGain"); if (g) g.textContent = currentLang === "my"
-    ? "ပုံမှန်နှုန်းထက် 100,000 ကျပ် လျှင် " + fmtRate(CONFIG.promoRate - CONFIG.sellRate) + " THB ပိုရပါသည်။ အခြားလမ်းကြောင်းတွင် ဤအထူးနှုန်းဖြင့် 1,000 THB = " + fmt(rev1000) + " MMK ဖြစ်ပါသည်။"
-    : "You get " + fmtRate(CONFIG.promoRate - CONFIG.sellRate) + " THB more per 100,000 MMK than the regular rate. In the other direction, 1,000 THB = " + fmt(rev1000) + " MMK at this special rate.";
-  var ar = document.getElementById("promoAppliedRate"); if (ar) ar.textContent = fmtRate(CONFIG.promoRate);
+  var g = document.getElementById("promoGain");
+  if (g) {
+    if (currentLang === "my") {
+      var partsMy = [];
+      if (hasPromoMmkThb()) partsMy.push("MMK → THB: ပုံမှန်နှုန်းထက် 100,000 ကျပ် လျှင် " + fmtRate(CONFIG.promoRate - CONFIG.sellRate) + " THB ပိုရပါသည် (Promo နှုန်း " + fmtRate(CONFIG.promoRate) + " THB)");
+      else partsMy.push("MMK → THB: Promo နှုန်း မသတ်မှတ်ထားသဖြင့် ပုံမှန်နှုန်း " + fmtRate(CONFIG.sellRate) + " THB ကို သုံးပါသည်");
+      if (hasPromoThbMmk()) partsMy.push("THB → MMK: Promo နှုန်း " + fmtRate(CONFIG.promoBuyRate) + " THB ဖြင့် 1,000 THB = " + fmt(rev1000) + " MMK (ပုံမှန်ထက် " + fmt(rev1000 - 1000 * BASE / CONFIG.buyRate) + " MMK ပိုရပါသည်)");
+      else partsMy.push("THB → MMK: Promo နှုန်း မသတ်မှတ်ထားသဖြင့် ပုံမှန်နှုန်းဖြင့် 1,000 THB = " + fmt(rev1000) + " MMK ဖြစ်ပါသည်");
+      g.textContent = partsMy.join("။ ") + "။";
+    } else {
+      var partsEn = [];
+      if (hasPromoMmkThb()) partsEn.push("MMK → THB: you get " + fmtRate(CONFIG.promoRate - CONFIG.sellRate) + " THB more per 100,000 MMK than the regular rate (Promo rate " + fmtRate(CONFIG.promoRate) + " THB)");
+      else partsEn.push("MMK → THB: no Promo rate set for this direction, so the regular rate " + fmtRate(CONFIG.sellRate) + " THB is used");
+      if (hasPromoThbMmk()) partsEn.push("THB → MMK: at its own Promo rate " + fmtRate(CONFIG.promoBuyRate) + " THB, 1,000 THB = " + fmt(rev1000) + " MMK (" + fmt(rev1000 - 1000 * BASE / CONFIG.buyRate) + " MMK more than the regular rate)");
+      else partsEn.push("THB → MMK: no Promo rate set for this direction, so the regular rate applies — 1,000 THB = " + fmt(rev1000) + " MMK");
+      g.textContent = partsEn.join(". ") + ".";
+    }
+  }
+  var ar = document.getElementById("promoAppliedRate"); if (ar) ar.textContent = fmtRate(effMmkThb);
+  var abr = document.getElementById("promoAppliedBuyRate"); if (abr) abr.textContent = fmtRate(effThbMmkRate);
   var arv = document.getElementById("promoAppliedReverse"); if (arv) arv.textContent = fmt(rev1000);
 }
 
@@ -674,7 +708,7 @@ function applyPromo() {
   var code = promoInput.value.trim().toUpperCase();
   if (!code) { promoMsg.textContent = t("promoEnterFirst"); promoMsg.className = "promo-msg err"; return; }
   if (code === CONFIG.promoCode.toUpperCase()) {
-    if (CONFIG.promoRate === null || CONFIG.promoRate === undefined || !isFinite(CONFIG.promoRate)) {
+    if (!hasAnyPromo()) {
       promoMsg.textContent = t("promoNoRate");
       promoMsg.className = "promo-msg err"; promoMsg.style.color = ""; promoMsg.style.fontWeight = "";
       return;
@@ -737,9 +771,10 @@ function convert() {
   document.getElementById("resultLabel").textContent = currentLang === "my"
     ? (isM ? t("youReceiveFor") + " " + fmt(amt) + " MMK" : t("youReceiveFor") + " " + fmt(amt) + " THB")
     : (isM ? "You receive for " + fmt(amt) + " MMK" : "You receive for " + fmt(amt) + " THB");
+  var promoForDir = state.promo && (isM ? hasPromoMmkThb() : hasPromoThbMmk());
   document.getElementById("resultRate").textContent = isM
-    ? t("rateWord") + " · 100,000 MMK = " + fmtRate(mmkToThbRate()) + " THB" + (state.promo ? t("promoSuffix") : "")
-    : t("rateWord") + " · 1,000 THB = " + fmt(1000 * BASE / thbToMmkRate()) + " MMK · 100,000 MMK = " + fmtRate(thbToMmkRate()) + " THB" + (state.promo ? t("promoSuffix") : "");
+    ? t("rateWord") + " · 100,000 MMK = " + fmtRate(mmkToThbRate()) + " THB" + (promoForDir ? t("promoSuffix") : "")
+    : t("rateWord") + " · 1,000 THB = " + fmt(1000 * BASE / thbToMmkRate()) + " MMK · 100,000 MMK = " + fmtRate(thbToMmkRate()) + " THB" + (promoForDir ? t("promoSuffix") : "");
 }
 document.getElementById("dirMmkThb").addEventListener("click", function () { setDir("MMK_THB"); });
 document.getElementById("dirThbMmk").addEventListener("click", function () { setDir("THB_MMK"); });
@@ -774,7 +809,7 @@ function buildTable() {
 buildTable();
 
 function refreshAll() {
-  if (CONFIG.promoRate === null || CONFIG.promoRate === undefined) {
+  if (!hasAnyPromo()) {
     state.promo = false;
     document.getElementById("promoResult").classList.remove("show");
     document.getElementById("promoAppliedNote").classList.remove("show");
@@ -840,24 +875,37 @@ function closeAdmin() {
   document.getElementById("adminNewPin").value = "";
 }
 function updateAdminPromoPreview() {
-  var raw = document.getElementById("adminPromoRate").value.trim();
-  var val = raw === "" ? NaN : parseAmount(raw);
+  var rawA = document.getElementById("adminPromoRate").value.trim();
+  var rawBEl = document.getElementById("adminPromoBuyRate");
+  var rawB = rawBEl ? rawBEl.value.trim() : "";
+  var valA = rawA === "" ? NaN : parseAmount(rawA);
+  var valB = rawB === "" ? NaN : parseAmount(rawB);
+  var hasA = isFinite(valA) && valA > 0;
+  var hasB = isFinite(valB) && valB > 0;
   var body = document.getElementById("adminPromoPreviewBody");
   var empty = document.getElementById("adminPromoPreviewEmpty");
-  if (!isFinite(val) || !(val > 0)) {
+  if (!hasA && !hasB) {
     if (body) body.style.display = "none";
     if (empty) empty.hidden = false;
     return;
   }
   if (body) body.style.display = "";
   if (empty) empty.hidden = true;
-  document.getElementById("adminPromoPreviewMmkThb").textContent = "100,000 MMK = " + fmtRate(val) + " THB";
-  document.getElementById("adminPromoPreviewThbMmk").textContent = "1,000 THB = " + fmt(1000 * BASE / val) + " MMK";
+  var sellFallback = parseAmount(document.getElementById("adminSell").value) || CONFIG.sellRate;
+  var buyFallback = parseAmount(document.getElementById("adminBuy").value) || CONFIG.buyRate;
+  document.getElementById("adminPromoPreviewMmkThb").textContent = hasA
+    ? "100,000 MMK = " + fmtRate(valA) + " THB"
+    : "100,000 MMK = " + fmtRate(sellFallback) + " THB (regular rate — no Promo set)";
+  document.getElementById("adminPromoPreviewThbMmk").textContent = hasB
+    ? "1,000 THB = " + fmt(1000 * BASE / valB) + " MMK · 100,000 MMK = " + fmtRate(valB) + " THB"
+    : "1,000 THB = " + fmt(1000 * BASE / buyFallback) + " MMK (regular rate — no Promo set)";
 }
 function prefillPanel() {
   document.getElementById("adminBuy").value = fmtRate(CONFIG.buyRate);
   document.getElementById("adminSell").value = fmtRate(CONFIG.sellRate);
   document.getElementById("adminPromoRate").value = (CONFIG.promoRate === null || CONFIG.promoRate === undefined) ? "" : fmtRate(CONFIG.promoRate);
+  var buyEl = document.getElementById("adminPromoBuyRate");
+  if (buyEl) buyEl.value = (CONFIG.promoBuyRate === null || CONFIG.promoBuyRate === undefined) ? "" : fmtRate(CONFIG.promoBuyRate);
   document.getElementById("adminPromoCode").textContent = CONFIG.promoCode;
   updateAdminPromoPreview();
 }
@@ -880,6 +928,12 @@ adminOverlay.addEventListener("click", function (e) { if (e.target === adminOver
 document.addEventListener("keydown", function (e) { if (e.key === "Escape" && adminOverlay.classList.contains("show")) closeAdmin(); });
 document.getElementById("adminLogoutBtn").addEventListener("click", closeAdmin);
 document.getElementById("adminPromoRate").addEventListener("input", updateAdminPromoPreview);
+var adminPromoBuyEl = document.getElementById("adminPromoBuyRate");
+if (adminPromoBuyEl) adminPromoBuyEl.addEventListener("input", updateAdminPromoPreview);
+var adminBuyElForPreview = document.getElementById("adminBuy");
+var adminSellElForPreview = document.getElementById("adminSell");
+if (adminBuyElForPreview) adminBuyElForPreview.addEventListener("input", updateAdminPromoPreview);
+if (adminSellElForPreview) adminSellElForPreview.addEventListener("input", updateAdminPromoPreview);
 
 /* PIN setup (first time) */
 document.getElementById("setupBtn").addEventListener("click", function () {
@@ -923,7 +977,7 @@ document.getElementById("forgotPinBtn").addEventListener("click", function () {
   delete this.dataset.armed;
   this.textContent = t("forgotBtn");
   CONFIG.buyRate = DEFAULTS.buyRate; CONFIG.sellRate = DEFAULTS.sellRate;
-  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate;
+  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate; CONFIG.promoBuyRate = DEFAULTS.promoBuyRate;
   CONFIG.updatedAt = "Sample rates"; hasStoredRates = false; ratesSource = "sample";
   refreshAll();
   showAdminView("setup");
@@ -936,17 +990,21 @@ document.getElementById("adminSaveBtn").addEventListener("click", function () {
   var sell = parseAmount(document.getElementById("adminSell").value);
   var promoRaw = document.getElementById("adminPromoRate").value.trim();
   var promo = promoRaw === "" ? null : parseAmount(promoRaw);
+  var promoBuyRawEl = document.getElementById("adminPromoBuyRate");
+  var promoBuyRaw = promoBuyRawEl ? promoBuyRawEl.value.trim() : "";
+  var promoBuy = promoBuyRaw === "" ? null : parseAmount(promoBuyRaw);
   if (!(buy > 0) || !(sell > 0)) { setMsg(msg, "Please enter valid numbers for the BUY and SELL rates.", false); return; }
-  if (promo !== null && !(promo > 0)) { setMsg(msg, "The Promo special rate must be a valid number — leave it blank to turn Promo off.", false); return; }
-  CONFIG.buyRate = buy; CONFIG.sellRate = sell; CONFIG.promoRate = promo;
+  if (promo !== null && !(promo > 0)) { setMsg(msg, "The Promo rate for MMK → THB must be a valid number — leave it blank to use the regular rate for that direction.", false); return; }
+  if (promoBuy !== null && !(promoBuy > 0)) { setMsg(msg, "The Promo rate for THB → MMK must be a valid number — leave it blank to use the regular rate for that direction.", false); return; }
+  CONFIG.buyRate = buy; CONFIG.sellRate = sell; CONFIG.promoRate = promo; CONFIG.promoBuyRate = promoBuy;
   CONFIG.updatedAt = nowStamp();
   hasStoredRates = true;
   try {
-    localStorage.setItem(LS_RATES, JSON.stringify({ buyRate: buy, sellRate: sell, promoCode: CONFIG.promoCode, promoRate: promo, updatedAt: CONFIG.updatedAt }));
+    localStorage.setItem(LS_RATES, JSON.stringify({ buyRate: buy, sellRate: sell, promoCode: CONFIG.promoCode, promoRate: promo, promoBuyRate: promoBuy, updatedAt: CONFIG.updatedAt }));
   } catch (e) { setMsg(msg, "The rates could not be saved in this browser.", false); return; }
   refreshAll();
   setMsg(msg, "Saving — sending to Supabase…", true);
-  pushRemoteRates(buy, sell, promo, function (ok) {
+  pushRemoteRates(buy, sell, promo, promoBuy, function (ok) {
     if (ok) {
       ratesSource = "supabase";
       refreshBoard();
@@ -962,7 +1020,7 @@ document.getElementById("adminResetBtn").addEventListener("click", function () {
   var msg = document.getElementById("adminMsg");
   try { localStorage.removeItem(LS_RATES); } catch (e) {}
   CONFIG.buyRate = DEFAULTS.buyRate; CONFIG.sellRate = DEFAULTS.sellRate;
-  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate;
+  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate; CONFIG.promoBuyRate = DEFAULTS.promoBuyRate;
   CONFIG.updatedAt = "Sample rates"; hasStoredRates = false; ratesSource = "sample";
   refreshAll();
   prefillPanel();
@@ -1003,6 +1061,7 @@ function applyRemoteRates(row) {
   CONFIG.sellRate = sell;
   if (row.promo_code) CONFIG.promoCode = String(row.promo_code);
   CONFIG.promoRate = (row.promo_rate === null || row.promo_rate === undefined || row.promo_rate === "" || !isFinite(+row.promo_rate)) ? null : +row.promo_rate;
+  CONFIG.promoBuyRate = (row.promo_buy_rate === null || row.promo_buy_rate === undefined || row.promo_buy_rate === "" || !isFinite(+row.promo_buy_rate)) ? null : +row.promo_buy_rate;
   if (row.updated_at) CONFIG.updatedAt = formatRemoteStamp(row.updated_at);
   hasStoredRates = true;
   ratesSource = "supabase";
@@ -1012,7 +1071,7 @@ function applyRemoteRates(row) {
 function loadRemoteRates() {
   if (!sb) return;
   try {
-    sb.from("rates").select("buy_rate,sell_rate,promo_rate,promo_code,updated_at").eq("id", 1).maybeSingle().then(function (res) {
+    sb.from("rates").select("buy_rate,sell_rate,promo_rate,promo_buy_rate,promo_code,updated_at").eq("id", 1).maybeSingle().then(function (res) {
       if (res && !res.error && res.data) applyRemoteRates(res.data);
     }, function () { /* Supabase unreachable — continue with the current rates */ });
   } catch (e) { /* continue */ }
@@ -1027,13 +1086,14 @@ function subscribeRemoteRates() {
       .subscribe();
   } catch (e) { /* if Realtime is unavailable, continue with the fetched rates */ }
 }
-function pushRemoteRates(buy, sell, promo, done) {
+function pushRemoteRates(buy, sell, promo, promoBuy, done) {
   if (!sb) { done(false); return; }
   var payload = {
     id: 1,
     buy_rate: buy,
     sell_rate: sell,
     promo_rate: promo,
+    promo_buy_rate: promoBuy,
     promo_code: CONFIG.promoCode,
     updated_at: new Date().toISOString()
   };
