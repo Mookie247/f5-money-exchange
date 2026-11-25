@@ -212,7 +212,7 @@
         <button type="button" id="langEnBtn" class="active" aria-pressed="true">EN</button>
         <button type="button" id="langMyBtn" aria-pressed="false">မြန်မာ</button>
       </div>
-      <div class="live-badge"><span class="dot" aria-hidden="true"></span> <span id="rateBadgeText">SAMPLE RATES</span></div>
+      <div class="live-badge" style="display:none"><span class="dot" aria-hidden="true"></span> <span id="rateBadgeText"></span></div>
     </div>
   </header>
 
@@ -234,7 +234,7 @@
   <div class="board" aria-label="Today's exchange rates">
     <div class="board-head">
       <div>
-        <h2><span id="boardTitle">Exchange Rates</span> <span id="boardBadge" style="background:var(--green);color:#0b2e1a;font-size:.72rem;font-weight:800;border-radius:999px;padding:3px 10px;vertical-align:middle">SAMPLE</span></h2>
+        <h2><span id="boardTitle">Exchange Rates</span> <span id="boardBadge" style="display:none;background:var(--green);color:#0b2e1a;font-size:.72rem;font-weight:800;border-radius:999px;padding:3px 10px;vertical-align:middle"></span></h2>
         <p id="boardDesc">All rates are shown on a base of 100,000 MMK only. Every calculation on this page is based on 100,000 MMK.</p>
       </div>
       <div class="updated"><span id="rateStatusLabel">Rate status</span> · <span id="updatedAt">—</span></div>
@@ -354,22 +354,7 @@
       <button class="admin-close" id="adminCloseBtn" type="button" aria-label="Close">×</button>
     </div>
 
-    <!-- First-time PIN setup -->
-    <div id="adminSetupView">
-      <p class="admin-note" id="setupNote">This is your first time here — set a new Admin PIN. The PIN is stored in this browser only.</p>
-      <div class="admin-field">
-        <label for="setupPin" id="setupPinLabel">New PIN (4–8 digits)</label>
-        <input id="setupPin" class="num" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="••••" />
-      </div>
-      <div class="admin-field">
-        <label for="setupPin2" id="setupPin2Label">Enter the PIN again</label>
-        <input id="setupPin2" class="num" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="••••" />
-      </div>
-      <p class="admin-msg" id="setupMsg" role="status"></p>
-      <button class="btn blue admin-full" id="setupBtn" type="button">Set PIN &amp; Enter</button>
-    </div>
-
-    <!-- PIN login -->
+    <!-- PIN login — the Admin PIN is permanently fixed; tapping the logo always opens this PIN entry -->
     <div id="adminLoginView" hidden>
       <p class="admin-note" id="loginNote">Enter your PIN to open the Admin panel.</p>
       <div class="admin-field">
@@ -378,7 +363,6 @@
       </div>
       <p class="admin-msg" id="loginMsg" role="status"></p>
       <button class="btn blue admin-full" id="loginBtn" type="button">Enter</button>
-      <button class="admin-linklike" id="forgotPinBtn" type="button">Forgot your PIN? — Reset the PIN and saved rates</button>
     </div>
 
     <!-- Admin panel -->
@@ -417,16 +401,8 @@
       <p class="admin-msg" id="adminMsg" role="status"></p>
       <div class="admin-actions">
         <button class="btn" id="adminSaveBtn" type="button">Save Rates</button>
-        <button class="btn ghost" id="adminResetBtn" type="button">Restore Sample Rates</button>
+        <button class="btn ghost" id="adminResetBtn" type="button">Restore Default Rates</button>
       </div>
-      <hr class="admin-divider" />
-      <p class="admin-subhead" id="changePinTitle">Change PIN</p>
-      <div class="admin-field">
-        <label for="adminNewPin" id="adminNewPinLabel">New PIN (4–8 digits)</label>
-        <input id="adminNewPin" class="num" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="••••" />
-      </div>
-      <p class="admin-msg" id="pinMsg" role="status"></p>
-      <button class="btn ghost admin-full" id="changePinBtn" type="button">Change PIN</button>
       <hr class="admin-divider" />
       <button class="btn ghost admin-full" id="adminLogoutBtn" type="button">Log Out (Close Panel)</button>
     </div>
@@ -441,12 +417,12 @@
    All rates = the THB you get per 100,000 MMK
    ============================================================ */
 var CONFIG = {
-  buyRate: 655,        /* Sample BUY rate — THB per 100,000 MMK (replace with the real rate) */
-  sellRate: 650,       /* Sample SELL rate — THB per 100,000 MMK (replace with the real rate) */
+  buyRate: 655,        /* Default BUY rate — THB per 100,000 MMK (replace with the real rate) */
+  sellRate: 650,       /* Default SELL rate — THB per 100,000 MMK (replace with the real rate) */
   promoCode: "WMTH13F5",
-  promoRate: 665,      /* Sample Promo rate — MMK → THB only, THB per 100,000 MMK (replace with the real rate) */
-  promoBuyRate: 645,   /* Sample Promo rate — THB → MMK only, THB per 100,000 MMK (replace with the real rate) */
-  updatedAt: "Sample rates"
+  promoRate: 665,      /* Default Promo rate — MMK → THB only, THB per 100,000 MMK (replace with the real rate) */
+  promoBuyRate: 645,   /* Default Promo rate — THB → MMK only, THB per 100,000 MMK (replace with the real rate) */
+  updatedAt: ""
 };
 
 var BASE = 100000;
@@ -463,8 +439,8 @@ var I18N = {
     boardTitle: "Exchange Rates", boardDesc: "All rates are shown on a base of 100,000 MMK only. Every calculation on this page is based on 100,000 MMK.",
     rateStatus: "Rate status", basePrefix: "Base —", buy: "BUY", sell: "SELL",
     spreadLabel: "Buy / Sell spread", spreadUnit: "THB (per 100,000 MMK)",
-    badgeSample: "SAMPLE", badgeLive: "LIVE RATE", badgeAdmin: "ADMIN RATE",
-    badgeTextSample: "SAMPLE RATES", badgeTextLive: "LIVE RATES · FROM SUPABASE", badgeTextLocal: "ADMIN RATE · SAVED IN THIS BROWSER",
+    badgeLive: "LIVE RATE", badgeAdmin: "ADMIN RATE",
+    badgeTextLive: "LIVE RATES · FROM SUPABASE", badgeTextLocal: "ADMIN RATE · SAVED IN THIS BROWSER",
     promoTitle: "Special Rate with a Promo Code",
     promoSub: "Have a Promo Code? Enter it here — each direction has its own special rate, based on 100,000 MMK. MMK → THB and THB → MMK are set separately in the Admin panel.",
     promoPlaceholder: "Enter Promo Code", promoBtn: "View Special Rate",
@@ -483,19 +459,16 @@ var I18N = {
     promoInvalid: "That Promo Code isn't valid — please check it and try again.",
     rateWord: "Rate", promoSuffix: " (Promo special rate)", youReceiveFor: "You receive for",
     adminTitle: "Admin", adminLock: "PIN PROTECTED",
-    setupNote: "This is your first time here — set a new Admin PIN. The PIN is stored in this browser only.",
-    setupPinLabel: "New PIN (4–8 digits)", setupPin2Label: "Enter the PIN again", setupBtn: "Set PIN & Enter",
     loginNote: "Enter your PIN to open the Admin panel.", loginPinLabel: "Admin PIN", loginBtn: "Enter",
-    forgotBtn: "Forgot your PIN? — Reset the PIN and saved rates",
     panelNote: "All rates = the THB you get per 100,000 MMK. Saved rates are stored in Supabase — everyone sees the new rates right away. If Supabase cannot be reached, they are saved in this browser only.",
     adminBuyLabel: "BUY rate (THB per 100,000 MMK)", adminSellLabel: "SELL rate (THB per 100,000 MMK)",
     adminPromoCodeLabel: "Promo Code", adminPromoRateLabel: "Promo rate — MMK → THB (THB per 100,000 MMK) — leave blank to use the regular rate for this direction",
     adminPromoBuyRateLabel: "Promo rate — THB → MMK (THB per 100,000 MMK) — leave blank to use the regular rate for this direction",
     adminPreviewTitle: "Promo Rate Preview — Each Direction Uses Its Own Rate",
     adminPreviewEmpty: "Enter a Promo rate above to preview that direction. Leave a direction blank to use its regular rate; leave both blank to turn Promo off.",
-    adminSaveBtn: "Save Rates", adminResetBtn: "Restore Sample Rates",
-    changePinTitle: "Change PIN", adminNewPinLabel: "New PIN (4–8 digits)", changePinBtn: "Change PIN", logoutBtn: "Log Out (Close Panel)",
-    sampleRatesText: "Sample rates", yangonTime: "(Yangon time)", adminRateText: "Admin rate", supabaseRateText: "Supabase rate"
+    adminSaveBtn: "Save Rates", adminResetBtn: "Restore Default Rates",
+    logoutBtn: "Log Out (Close Panel)",
+    yangonTime: "(Yangon time)", adminRateText: "Admin rate", supabaseRateText: "Supabase rate"
   },
   my: {
     brandSub: "ထိုင်းဘတ် (THB) ↔ မြန်မာကျပ် (MMK) ငွေလဲနှုန်းများ",
@@ -503,8 +476,8 @@ var I18N = {
     boardTitle: "ငွေလဲနှုန်းများ", boardDesc: "နှုန်းအားလုံးကို 100,000 ကျပ် တစ်ခုတည်းကိုသာ အခြေခံပြီး ပြထားပါသည်။ ဤစာမျက်နှာရှိ တွက်ချက်မှုအားလုံးကို 100,000 ကျပ် အခြေခံဖြင့် တွက်ပါသည်။",
     rateStatus: "နှုန်းအခြေအနေ", basePrefix: "အခြေခံ —", buy: "ဝယ်", sell: "ရောင်း",
     spreadLabel: "ဝယ် / ရောင်း ကွာခြားချက်", spreadUnit: "THB (100,000 ကျပ် လျှင်)",
-    badgeSample: "နမူနာ", badgeLive: "လက်ရှိနှုန်း", badgeAdmin: "Admin နှုန်း",
-    badgeTextSample: "နမူနာနှုန်းများ", badgeTextLive: "လက်ရှိနှုန်းများ · SUPABASE မှ", badgeTextLocal: "Admin နှုန်း · ဤ browser တွင် သိမ်းထားသည်",
+    badgeLive: "လက်ရှိနှုန်း", badgeAdmin: "Admin နှုန်း",
+    badgeTextLive: "လက်ရှိနှုန်းများ · SUPABASE မှ", badgeTextLocal: "Admin နှုန်း · ဤ browser တွင် သိမ်းထားသည်",
     promoTitle: "Promo Code ဖြင့် အထူးနှုန်း",
     promoSub: "Promo Code ရှိပါသလား။ ဤနေရာတွင် ထည့်ပါ — လမ်းကြောင်းတစ်ခုချင်းစီတွင် ကိုယ်ပိုင် အထူးနှုန်း သပ်သပ်စီ ရှိပါသည်၊ 100,000 ကျပ် အခြေခံဖြင့် တွက်ပါသည်။ MMK → THB နှင့် THB → MMK ကို Admin panel တွင် သပ်သပ်စီ သတ်မှတ်ထားပါသည်။",
     promoPlaceholder: "Promo Code ထည့်ပါ", promoBtn: "အထူးနှုန်း ကြည့်ရန်",
@@ -523,19 +496,16 @@ var I18N = {
     promoInvalid: "Promo Code မမှန်ပါ — ပြန်စစ်ပြီး ထပ်ကြိုးစားပေးပါ။",
     rateWord: "နှုန်း", promoSuffix: " (Promo အထူးနှုန်း)", youReceiveFor: "ရရှိမည့် ပမာဏ —",
     adminTitle: "Admin", adminLock: "PIN ဖြင့် ကာကွယ်ထားသည်",
-    setupNote: "ပထမဆုံး အကြိမ် ဝင်ရောက်ခြင်း ဖြစ်ပါသည် — Admin PIN အသစ် သတ်မှတ်ပေးပါ။ PIN ကို ဤ browser တွင်သာ သိမ်းထားပါသည်။",
-    setupPinLabel: "PIN အသစ် (ဂဏန်း ၄–၈ လုံး)", setupPin2Label: "PIN ကို ထပ်ထည့်ပါ", setupBtn: "PIN သတ်မှတ်၍ ဝင်ရန်",
     loginNote: "Admin panel ဖွင့်ရန် PIN ထည့်ပေးပါ။", loginPinLabel: "Admin PIN", loginBtn: "ဝင်ရန်",
-    forgotBtn: "PIN မေ့နေပါသလား။ — PIN နှင့် သိမ်းထားသော နှုန်းများကို ပြန်သတ်မှတ်ရန်",
     panelNote: "နှုန်းအားလုံး = 100,000 ကျပ် လျှင် ရရှိမည့် THB ဖြစ်ပါသည်။ သိမ်းလိုက်သော နှုန်းများကို Supabase တွင် သိမ်းထားသဖြင့် လူတိုင်း နှုန်းအသစ်ကို ချက်ချင်း မြင်ရပါသည်။ Supabase သို့ မချိတ်နိုင်ပါက ဤ browser တွင်သာ သိမ်းပါမည်။",
     adminBuyLabel: "ဝယ်နှုန်း (100,000 ကျပ် လျှင် THB)", adminSellLabel: "ရောင်းနှုန်း (100,000 ကျပ် လျှင် THB)",
     adminPromoCodeLabel: "Promo Code", adminPromoRateLabel: "Promo နှုန်း — MMK → THB (100,000 ကျပ် လျှင် THB) — ဤလမ်းကြောင်းအတွက် ပုံမှန်နှုန်း သုံးလိုပါက အလွတ်ထားပါ",
     adminPromoBuyRateLabel: "Promo နှုန်း — THB → MMK (100,000 ကျပ် လျှင် THB) — ဤလမ်းကြောင်းအတွက် ပုံမှန်နှုန်း သုံးလိုပါက အလွတ်ထားပါ",
     adminPreviewTitle: "Promo နှုန်း အစမ်းပြသမှု — လမ်းကြောင်းတစ်ခုချင်းစီ ကိုယ်ပိုင်နှုန်းဖြင့်",
     adminPreviewEmpty: "ထိုလမ်းကြောင်း အစမ်းကြည့်ရန် အထက်တွင် Promo နှုန်း ထည့်ပေးပါ။ လမ်းကြောင်းတစ်ခုကို အလွတ်ထားပါက ၎င်း၏ ပုံမှန်နှုန်းကို သုံးပါမည်၊ နှစ်ခုလုံး အလွတ်ထားပါက Promo ပိတ်ပါမည်။",
-    adminSaveBtn: "နှုန်းများ သိမ်းရန်", adminResetBtn: "နမူနာနှုန်းများ ပြန်ထားရန်",
-    changePinTitle: "PIN ပြောင်းရန်", adminNewPinLabel: "PIN အသစ် (ဂဏန်း ၄–၈ လုံး)", changePinBtn: "PIN ပြောင်းရန်", logoutBtn: "ထွက်ရန် (Panel ပိတ်ရန်)",
-    sampleRatesText: "နမူနာနှုန်းများ", yangonTime: "(ရန်ကုန် အချိန်)", adminRateText: "Admin နှုန်း", supabaseRateText: "Supabase နှုန်း"
+    adminSaveBtn: "နှုန်းများ သိမ်းရန်", adminResetBtn: "မူလနှုန်းများ ပြန်ထားရန်",
+    logoutBtn: "ထွက်ရန် (Panel ပိတ်ရန်)",
+    yangonTime: "(ရန်ကုန် အချိန်)", adminRateText: "Admin နှုန်း", supabaseRateText: "Supabase နှုန်း"
   }
 };
 function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key; }
@@ -555,9 +525,7 @@ function applyLanguage() {
   setText("quickTitle", "quickTitle"); setText("quickSub", "quickSub");
   setText("footerMain", "footerMain"); setText("footerNote", "footerNote");
   setText("adminTitle", "adminTitle"); setText("adminLock", "adminLock");
-  setText("setupNote", "setupNote"); setText("setupPinLabel", "setupPinLabel"); setText("setupPin2Label", "setupPin2Label"); setText("setupBtn", "setupBtn");
   setText("loginNote", "loginNote"); setText("loginPinLabel", "loginPinLabel"); setText("loginBtn", "loginBtn");
-  var forgotEl = document.getElementById("forgotPinBtn"); if (forgotEl && !forgotEl.dataset.armed) forgotEl.textContent = t("forgotBtn");
   var panelNoteEl = document.getElementById("panelNote");
   if (panelNoteEl) panelNoteEl.innerHTML = currentLang === "my"
     ? "နှုန်းအားလုံး = 100,000 ကျပ် လျှင် ရရှိမည့် THB ဖြစ်ပါသည်။ သိမ်းလိုက်သော နှုန်းများကို <strong>Supabase</strong> တွင် သိမ်းထားသဖြင့် လူတိုင်း နှုန်းအသစ်ကို ချက်ချင်း မြင်ရပါသည်။ Supabase သို့ မချိတ်နိုင်ပါက ဤ browser တွင်သာ သိမ်းပါမည်။"
@@ -566,8 +534,7 @@ function applyLanguage() {
   setText("adminPromoCodeLabel", "adminPromoCodeLabel"); setText("adminPromoRateLabel", "adminPromoRateLabel"); setText("adminPromoBuyRateLabel", "adminPromoBuyRateLabel");
   setText("adminPreviewTitle", "adminPreviewTitle"); setText("adminPromoPreviewEmpty", "adminPreviewEmpty");
   setText("adminSaveBtn", "adminSaveBtn"); setText("adminResetBtn", "adminResetBtn");
-  setText("changePinTitle", "changePinTitle"); setText("adminNewPinLabel", "adminNewPinLabel");
-  setText("changePinBtn", "changePinBtn"); setText("adminLogoutBtn", "logoutBtn");
+  setText("adminLogoutBtn", "logoutBtn");
   var enBtn = document.getElementById("langEnBtn"), myBtn = document.getElementById("langMyBtn");
   if (enBtn) { enBtn.classList.toggle("active", currentLang === "en"); enBtn.setAttribute("aria-pressed", currentLang === "en" ? "true" : "false"); }
   if (myBtn) { myBtn.classList.toggle("active", currentLang === "my"); myBtn.classList.toggle("my-active", currentLang === "my"); myBtn.setAttribute("aria-pressed", currentLang === "my" ? "true" : "false"); }
@@ -600,7 +567,7 @@ var LS_RATES = "f5_github_rates_v1";
 var LS_PIN = "f5_github_admin_pin_v1";
 var DEFAULTS = { buyRate: CONFIG.buyRate, sellRate: CONFIG.sellRate, promoCode: CONFIG.promoCode, promoRate: CONFIG.promoRate, promoBuyRate: CONFIG.promoBuyRate };
 var hasStoredRates = false;
-var ratesSource = "sample"; /* "sample" | "local" | "supabase" */
+var ratesSource = "default"; /* "default" | "local" | "supabase" */
 (function loadStoredRates() {
   try {
     var raw = localStorage.getItem(LS_RATES);
@@ -617,7 +584,7 @@ var ratesSource = "sample"; /* "sample" | "local" | "supabase" */
       hasStoredRates = true;
       ratesSource = "local";
     }
-  } catch (e) { /* if localStorage is unavailable, continue with the CONFIG sample rates */ }
+  } catch (e) { /* if localStorage is unavailable, continue with the CONFIG default rates */ }
 })();
 
 function fmt(n, dec) {
@@ -679,9 +646,20 @@ function refreshBoard() {
   document.getElementById("buyEq").textContent = fmtRate(CONFIG.buyRate);
   document.getElementById("sellEq").textContent = fmtRate(CONFIG.sellRate);
   document.getElementById("spreadVal").textContent = fmtRate(CONFIG.buyRate - CONFIG.sellRate);
-  document.getElementById("updatedAt").textContent = CONFIG.updatedAt === "Sample rates" ? t("sampleRatesText") : CONFIG.updatedAt;
-  document.getElementById("rateBadgeText").textContent = ratesSource === "supabase" ? t("badgeTextLive") : (hasStoredRates ? t("badgeTextLocal") : t("badgeTextSample"));
-  document.getElementById("boardBadge").textContent = ratesSource === "supabase" ? t("badgeLive") : (hasStoredRates ? t("badgeAdmin") : t("badgeSample"));
+  document.getElementById("updatedAt").textContent = CONFIG.updatedAt ? CONFIG.updatedAt : "—";
+  var badgeTextEl = document.getElementById("rateBadgeText");
+  var boardBadgeEl = document.getElementById("boardBadge");
+  if (ratesSource === "supabase" || hasStoredRates) {
+    badgeTextEl.textContent = ratesSource === "supabase" ? t("badgeTextLive") : t("badgeTextLocal");
+    if (badgeTextEl.parentElement) badgeTextEl.parentElement.style.display = "";
+    boardBadgeEl.textContent = ratesSource === "supabase" ? t("badgeLive") : t("badgeAdmin");
+    boardBadgeEl.style.display = "";
+  } else {
+    badgeTextEl.textContent = "";
+    if (badgeTextEl.parentElement) badgeTextEl.parentElement.style.display = "none";
+    boardBadgeEl.textContent = "";
+    boardBadgeEl.style.display = "none";
+  }
   document.getElementById("adminPromoCode").textContent = CONFIG.promoCode;
 }
 refreshBoard();
@@ -826,7 +804,6 @@ convert();
 
 /* ---------- Admin (PIN + localStorage) ---------- */
 var adminOverlay = document.getElementById("adminOverlay");
-var setupView = document.getElementById("adminSetupView");
 var loginView = document.getElementById("adminLoginView");
 var panelView = document.getElementById("adminPanelView");
 
@@ -850,29 +827,33 @@ function hashPin(pin) {
   return Promise.resolve(simpleHash(pin));
 }
 function getStoredPinHash() { try { return localStorage.getItem(LS_PIN); } catch (e) { return null; } }
+/* The Admin PIN is permanently fixed — only its hash is kept here and stored in this browser, never the PIN itself.
+   FIXED_PIN_HASH is the SHA-256 hash (via hashPin above); FIXED_PIN_HASH_FALLBACK is the same PIN under the simpleHash fallback. */
+var FIXED_PIN_HASH = "db0bbe0040a1b85bd043b0739900a7e55e39a3171db408dafb1992eb58c1f763";
+var FIXED_PIN_HASH_FALLBACK = "72b4657e2cb93c";
+function ensureFixedPinHash() {
+  try { if (localStorage.getItem(LS_PIN) !== FIXED_PIN_HASH) localStorage.setItem(LS_PIN, FIXED_PIN_HASH); } catch (e) {}
+}
+function isFixedPinHash(h) { return h === FIXED_PIN_HASH || h === FIXED_PIN_HASH_FALLBACK; }
+ensureFixedPinHash();
 function validPinFormat(pin) { return /^\d{4,8}$/.test(pin); }
 function showAdminView(view) {
-  setupView.hidden = view !== "setup";
   loginView.hidden = view !== "login";
   panelView.hidden = view !== "panel";
 }
 function openAdmin() {
+  ensureFixedPinHash();
   adminOverlay.classList.add("show");
   document.body.style.overflow = "hidden";
-  document.getElementById("setupMsg").textContent = "";
   document.getElementById("loginMsg").textContent = "";
   document.getElementById("adminMsg").textContent = "";
-  document.getElementById("pinMsg").textContent = "";
-  if (getStoredPinHash()) { showAdminView("login"); setTimeout(function () { document.getElementById("loginPin").focus(); }, 50); }
-  else { showAdminView("setup"); setTimeout(function () { document.getElementById("setupPin").focus(); }, 50); }
+  showAdminView("login");
+  setTimeout(function () { document.getElementById("loginPin").focus(); }, 50);
 }
 function closeAdmin() {
   adminOverlay.classList.remove("show");
   document.body.style.overflow = "";
-  document.getElementById("setupPin").value = "";
-  document.getElementById("setupPin2").value = "";
   document.getElementById("loginPin").value = "";
-  document.getElementById("adminNewPin").value = "";
 }
 function updateAdminPromoPreview() {
   var rawA = document.getElementById("adminPromoRate").value.trim();
@@ -935,53 +916,17 @@ var adminSellElForPreview = document.getElementById("adminSell");
 if (adminBuyElForPreview) adminBuyElForPreview.addEventListener("input", updateAdminPromoPreview);
 if (adminSellElForPreview) adminSellElForPreview.addEventListener("input", updateAdminPromoPreview);
 
-/* PIN setup (first time) */
-document.getElementById("setupBtn").addEventListener("click", function () {
-  var msg = document.getElementById("setupMsg");
-  var p1 = document.getElementById("setupPin").value.trim();
-  var p2 = document.getElementById("setupPin2").value.trim();
-  if (!validPinFormat(p1)) { setMsg(msg, "The PIN must be 4 to 8 digits.", false); return; }
-  if (p1 !== p2) { setMsg(msg, "The two PINs don't match — please check and enter them again.", false); return; }
-  hashPin(p1).then(function (h) {
-    try { localStorage.setItem(LS_PIN, h); } catch (e) { setMsg(msg, "The PIN could not be saved in this browser.", false); return; }
-    enterPanel();
-  });
-});
-document.getElementById("setupPin2").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("setupBtn").click(); });
-
-/* PIN login */
+/* PIN login — only the permanently fixed PIN opens the panel; the entered PIN is hashed and compared with the stored fixed hash */
 document.getElementById("loginBtn").addEventListener("click", function () {
   var msg = document.getElementById("loginMsg");
   var pin = document.getElementById("loginPin").value.trim();
   if (!pin) { setMsg(msg, "Please enter your PIN first.", false); return; }
   hashPin(pin).then(function (h) {
-    if (h === getStoredPinHash()) { document.getElementById("loginPin").value = ""; enterPanel(); }
+    if (isFixedPinHash(h)) { ensureFixedPinHash(); document.getElementById("loginPin").value = ""; enterPanel(); }
     else { setMsg(msg, "Incorrect PIN — please check it and try again.", false); }
   });
 });
 document.getElementById("loginPin").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("loginBtn").click(); });
-
-/* Forgot PIN — double-tap to confirm, then clear the PIN + saved rates */
-var forgotArmed = false;
-document.getElementById("forgotPinBtn").addEventListener("click", function () {
-  var msg = document.getElementById("loginMsg");
-  if (!forgotArmed) {
-    forgotArmed = true;
-    this.dataset.armed = "1";
-    this.textContent = currentLang === "my" ? "သေချာပါသလား။ ထပ်နှိပ်ပါက PIN နှင့် သိမ်းထားသော နှုန်းများ ပျက်သွားပါမည်" : "Are you sure? Tap again and the PIN and saved rates will be deleted";
-    setMsg(msg, currentLang === "my" ? "ပြန်သတ်မှတ်ပါက နမူနာနှုန်းများ ပြန်ရပါမည်။" : "Resetting restores the sample rates.", false);
-    return;
-  }
-  try { localStorage.removeItem(LS_PIN); localStorage.removeItem(LS_RATES); } catch (e) {}
-  forgotArmed = false;
-  delete this.dataset.armed;
-  this.textContent = t("forgotBtn");
-  CONFIG.buyRate = DEFAULTS.buyRate; CONFIG.sellRate = DEFAULTS.sellRate;
-  CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate; CONFIG.promoBuyRate = DEFAULTS.promoBuyRate;
-  CONFIG.updatedAt = "Sample rates"; hasStoredRates = false; ratesSource = "sample";
-  refreshAll();
-  showAdminView("setup");
-});
 
 /* Save rates */
 document.getElementById("adminSaveBtn").addEventListener("click", function () {
@@ -1015,28 +960,16 @@ document.getElementById("adminSaveBtn").addEventListener("click", function () {
   });
 });
 
-/* Restore sample rates */
+/* Restore default rates */
 document.getElementById("adminResetBtn").addEventListener("click", function () {
   var msg = document.getElementById("adminMsg");
   try { localStorage.removeItem(LS_RATES); } catch (e) {}
   CONFIG.buyRate = DEFAULTS.buyRate; CONFIG.sellRate = DEFAULTS.sellRate;
   CONFIG.promoCode = DEFAULTS.promoCode; CONFIG.promoRate = DEFAULTS.promoRate; CONFIG.promoBuyRate = DEFAULTS.promoBuyRate;
-  CONFIG.updatedAt = "Sample rates"; hasStoredRates = false; ratesSource = "sample";
+  CONFIG.updatedAt = ""; hasStoredRates = false; ratesSource = "default";
   refreshAll();
   prefillPanel();
-  setMsg(msg, "Sample rates restored — the saved Admin rates have been deleted.", true);
-});
-
-/* Change PIN */
-document.getElementById("changePinBtn").addEventListener("click", function () {
-  var msg = document.getElementById("pinMsg");
-  var np = document.getElementById("adminNewPin").value.trim();
-  if (!validPinFormat(np)) { setMsg(msg, "The new PIN must be 4 to 8 digits.", false); return; }
-  hashPin(np).then(function (h) {
-    try { localStorage.setItem(LS_PIN, h); } catch (e) { setMsg(msg, "The PIN could not be saved in this browser.", false); return; }
-    document.getElementById("adminNewPin").value = "";
-    setMsg(msg, "PIN changed — use the new PIN next time you sign in.", true);
-  });
+  setMsg(msg, "Default rates restored — the saved Admin rates have been deleted.", true);
 });
 
 /* ============================================================
